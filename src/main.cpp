@@ -10,7 +10,8 @@
 
 int main(int argc, char *argv[])
 {
-    std::string mode, checkpoint, cmd;
+    std::string mode, name, cmd;
+    std::string actor_path, critic_path;
     std::vector<std::string> tickers;
     std::vector<std::vector<double>> price;
     std::vector<std::vector<double>> valuation;
@@ -22,7 +23,9 @@ int main(int argc, char *argv[])
     std::default_random_engine seed(std::chrono::system_clock::now().time_since_epoch().count());
 
     mode = argv[1];
-    checkpoint = argv[2];
+    name = argv[2];
+    actor_path = "./models/" + name + "-actor";
+    critic_path = "./models/" + name + "-critic";
 
     cmd = "./python/download.py ";
     for(unsigned int i = 3; i < argc; i++) {
@@ -44,18 +47,22 @@ int main(int argc, char *argv[])
     actor.add_layer(tickers.size() * OBS, tickers.size() * OBS);
     actor.add_layer(tickers.size() * OBS, tickers.size() * OBS);
     actor.add_layer(tickers.size() * OBS, tickers.size() * OBS);
-    actor.add_layer(tickers.size() * OBS, tickers.size());
+    actor.add_layer(tickers.size() * OBS, tickers.size()); actor.use_softmax();
     actor.init(seed);
-    actor.use_softmax();
+    actor.load(actor_path);
 
     critic.add_layer(tickers.size() * (OBS+1), tickers.size() * (OBS+1));
     critic.add_layer(tickers.size() * (OBS+1), tickers.size() * (OBS+1));
     critic.add_layer(tickers.size() * (OBS+1), tickers.size() * (OBS+1));
     critic.add_layer(tickers.size() * (OBS+1), 1);
     critic.init(seed);
+    critic.load(critic_path);
 
     copy(actor, target_actor);
     copy(critic, target_critic);
+
+    actor.save(actor_path);
+    critic.save(critic_path);
 
     return 0;
 }

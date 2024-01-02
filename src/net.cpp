@@ -3,6 +3,7 @@
 #include <string>
 #include <random>
 #include <algorithm>
+#include <fstream>
 
 #include "../lib/net.hpp"
 
@@ -77,6 +78,40 @@ std::vector<double> Net::forward(std::vector<double> &x) {
     }
 
     return yhat;
+}
+
+void Net::save(std::string &path) {
+    std::ofstream out(path);
+    if(out.is_open()) {
+        for(unsigned int l = 0; l < layers.size(); l++) {
+            for(unsigned int n = 0; n < layers[l].out_features(); n++) {
+                for(unsigned int i = 0; i < layers[l].in_features(); i++)
+                    out << layers[l].node(n)->weight(i) << " ";
+                out << layers[l].node(n)->bias() << "\n";
+            }
+        }
+        out.close();
+    }
+}
+
+void Net::load(std::string &path) {
+    std::ifstream out(path);
+    if(out.is_open()) {
+        for(unsigned int l = 0; l < layers.size(); l++) {
+            for(unsigned int n = 0; n < layers[l].out_features(); n++) {
+                std::string line;
+                std::getline(out, line);
+                for(unsigned int i = 0; i < layers[l].in_features(); i++) {
+                    double weight = std::stod(line.substr(0, line.find(" ")));
+                    layers[l].node(n)->set_weight(i, weight);
+                    line = line.substr(line.find(" ") + 1);
+                }
+                double bias = std::stod(line);
+                layers[l].node(n)->set_bias(bias);
+            }
+        }
+        out.close();
+    }
 }
 
 void copy(Net &src, Net &dst) {
