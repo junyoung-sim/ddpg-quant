@@ -11,4 +11,6 @@
 
 std::vector<double> sample_state(std::vector<std::vector<double>> &env, unsigned int t);
 
+std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state, double eps);
+
 #endif

@@ -64,5 +64,10 @@ int main(int argc, char *argv[])
     actor.save(actor_path);
     critic.save(critic_path);
 
+    std::vector<std::string>().swap(tickers);
+    std::vector<std::vector<double>>().swap(price);
+    std::vector<std::vector<double>>().swap(valuation);
+    std::vector<std::thread>().swap(threads);
+
     return 0;
 }

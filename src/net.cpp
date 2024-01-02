@@ -28,12 +28,13 @@ unsigned int Layer::out_features() { return out; }
 Node *Layer::node(unsigned int index) { return &n[index]; }
 
 void Net::add_layer(unsigned int in, unsigned int out) { layers.push_back(Layer(in, out)); }
-void Net::init(std::default_random_engine &seed) {
-    std::normal_distribution<double> std_normal(0.00, 1.00);
+void Net::init(std::default_random_engine &sd) {
+    seed = &sd;
+    std::normal_distribution<double> gaussian(0.00, 1.00);
     for(unsigned int l = 0; l < layers.size(); l++) {
         for(unsigned int n = 0; n < layers[l].out_features(); n++) {
             for(unsigned int i = 0; i < layers[l].in_features(); i++)
-                layers[l].node(n)->set_weight(i, std_normal(seed) * sqrt(2.00 / layers[l].in_features()));
+                layers[l].node(n)->set_weight(i, gaussian(*seed) * sqrt(2.00 / layers[l].in_features()));
         }
     }
 }
@@ -45,11 +46,12 @@ unsigned int Net::num_of_layers() { return layers.size(); }
 Layer *Net::layer(unsigned int index) { return &layers[index]; }
 Layer *Net::back() { return &layers.back(); }
 
-std::vector<double> Net::forward(std::vector<double> &x) {
+std::vector<double> Net::forward(std::vector<double> &x, bool noise) {
     std::vector<double> yhat; double expsum = 0.00;
+    std::normal_distribution<double> gaussian(0.00, 1.00);
     for(unsigned int l = 0; l < layers.size(); l++) {
         for(unsigned int n = 0; n < layers[l].out_features(); n++) {
-            double dot = 0.00;
+            double dot = 0.00, sum = 0.00;
             for(unsigned int i = 0; i < layers[l].in_features(); i++) {
                 if(l == 0)
                     dot += x[i] * layers[l].node(n)->weight(i);
@@ -58,7 +60,7 @@ std::vector<double> Net::forward(std::vector<double> &x) {
             }
 
             layers[l].node(n)->init();
-            layers[l].node(n)->set_sum(dot + layers[l].node(n)->bias());
+            layers[l].node(n)->set_sum(dot + layers[l].node(n)->bias() + (noise ? gaussian(*seed) : 0.00));
 
             if(l == layers.size() - 1) {
                 if(softmax) expsum += exp(layers[l].node(n)->sum());

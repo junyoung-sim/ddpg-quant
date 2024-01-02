@@ -12,3 +12,9 @@ std::vector<double> sample_state(std::vector<std::vector<double>> &env, unsigned
     }
     return state;
 }
+
+std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state, double eps) {
+    double explore = (double)rand() / RAND_MAX;
+    return actor.forward(state, explore < eps);
+}
+
