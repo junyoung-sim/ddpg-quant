@@ -27,8 +27,7 @@ unsigned int Layer::out_features() { return out; }
 Node *Layer::node(unsigned int index) { return &n[index]; }
 
 void Net::add_layer(unsigned int in, unsigned int out) { layers.push_back(Layer(in, out)); }
-void Net::init(std::default_random_engine &seed, bool sm) {
-    softmax = sm;
+void Net::init(std::default_random_engine &seed) {
     std::normal_distribution<double> std_normal(0.00, 1.00);
     for(unsigned int l = 0; l < layers.size(); l++) {
         for(unsigned int n = 0; n < layers[l].out_features(); n++) {
@@ -37,6 +36,13 @@ void Net::init(std::default_random_engine &seed, bool sm) {
         }
     }
 }
+
+void Net::use_softmax() { softmax = true; }
+bool Net::is_softmax() { return softmax; }
+
+unsigned int Net::num_of_layers() { return layers.size(); }
+Layer *Net::layer(unsigned int index) { return &layers[index]; }
+Layer *Net::back() { return &layers.back(); }
 
 std::vector<double> Net::forward(std::vector<double> &x) {
     std::vector<double> yhat; double expsum = 0.00;
@@ -71,4 +77,24 @@ std::vector<double> Net::forward(std::vector<double> &x) {
     }
 
     return yhat;
+}
+
+void copy(Net &src, Net &dst) {
+    bool empty = !dst.num_of_layers();
+    for(unsigned int l = 0; l < src.num_of_layers(); l++) {
+        unsigned int in = src.layer(l)->in_features();
+        unsigned int out = src.layer(l)->out_features();
+        if(empty) dst.add_layer(in, out);
+
+        for(unsigned int n = 0; n < out; n++) {
+            for(unsigned int i = 0; i < in; i++) {
+                double weight = src.layer(l)->node(n)->weight(i);
+                dst.back()->node(n)->set_weight(i, weight);
+            }
+            double bias = src.layer(l)->node(n)->bias();
+            dst.back()->node(n)->set_bias(bias);
+        }
+    }
+
+    if(src.is_softmax()) dst.use_softmax();
 }

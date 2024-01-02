@@ -59,13 +59,21 @@ private:
     bool softmax;
     std::vector<Layer> layers;
 public:
-    Net() {}
-
+    Net() { softmax = false; }
     void add_layer(unsigned int in, unsigned int out);
-    void init(std::default_random_engine &seed, bool sm);
+    void init(std::default_random_engine &seed);
+    
+    void use_softmax();
+    bool is_softmax();
+
+    unsigned int num_of_layers();
+    Layer *layer(unsigned int index);
+    Layer *back();
 
     std::vector<double> forward(std::vector<double> &x);
 };
+
+void copy(Net &src, Net &dst);
 
 double relu(double x);
 double drelu(double x);

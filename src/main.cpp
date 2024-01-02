@@ -1,54 +1,61 @@
 #include <cstdlib>
 #include <iostream>
 #include <random>
+#include <chrono>
+#include <string>
+#include <vector>
+#include <thread>
 
-#include "../lib/param.hpp"
-#include "../lib/data.hpp"
-#include "../lib/gbm.hpp"
-#include "../lib/net.hpp"
+#include "../lib/quant.hpp"
 
 int main(int argc, char *argv[])
 {
-    std::default_random_engine seed;
+    std::string mode, checkpoint, cmd;
+    std::vector<std::string> tickers;
+    std::vector<std::vector<double>> price;
+    std::vector<std::vector<double>> valuation;
+    std::vector<std::thread> threads;
 
-    //std::system("./python/download.py SPY");
-    std::vector<double> raw = read_csv("./data/merge.csv")[0];
+    Net actor, target_actor;
+    Net critic, target_critic;
 
-    for(int i = raw.size() - 5; i < raw.size(); i++)
-        std::cout << raw[i] << " ";
-    std::cout << "\n";
+    std::default_random_engine seed(std::chrono::system_clock::now().time_since_epoch().count());
 
-    std::vector<double> v;
-    vscore(raw, v, VOBS, VEXT, VITR, seed);
+    mode = argv[1];
+    checkpoint = argv[2];
 
-    for(int i = v.size() - 5; i < v.size(); i++)
-        std::cout << v[i] << " ";
-    std::cout << "\n";
+    cmd = "./python/download.py ";
+    for(unsigned int i = 3; i < argc; i++) {
+        tickers.push_back(argv[i]);
+        cmd += tickers.back() + " ";
+    }
+    std::system(cmd.c_str());
 
-    std::vector<double> x = {-1.0, 0.0, 0.3, 0.2, 0.8};
+    price = read_csv("./data/merge.csv");
+    valuation.resize(tickers.size(), std::vector<double>());
 
-    Net qnet;
-    qnet.add_layer(5, 5);
-    qnet.add_layer(5, 5);
-    qnet.add_layer(5, 3);
-    qnet.init(seed, false);
+    for(unsigned int i = 0; i < tickers.size(); i++) {
+        std::thread th(vscore, std::ref(price[i]), std::ref(valuation[i]), VOBS, VEXT, VITR, std::ref(seed));
+        threads.push_back(std::move(th));
+    }
+    for(std::thread &th: threads) th.join();
+    for(std::vector<double> &p: price) p.erase(p.begin(), p.begin() + VOBS-1);
 
-    std::vector<double> yhat = qnet.forward(x);
-    for(double &x: yhat)
-        std::cout << x << " ";
-    std::cout << "\n";
+    actor.add_layer(tickers.size() * OBS, tickers.size() * OBS);
+    actor.add_layer(tickers.size() * OBS, tickers.size() * OBS);
+    actor.add_layer(tickers.size() * OBS, tickers.size() * OBS);
+    actor.add_layer(tickers.size() * OBS, tickers.size());
+    actor.init(seed);
+    actor.use_softmax();
 
-    Net policy;
-    policy.add_layer(5, 5);
-    policy.add_layer(5, 5);
-    policy.add_layer(5, 3);
-    policy.init(seed, true);
+    critic.add_layer(tickers.size() * (OBS+1), tickers.size() * (OBS+1));
+    critic.add_layer(tickers.size() * (OBS+1), tickers.size() * (OBS+1));
+    critic.add_layer(tickers.size() * (OBS+1), tickers.size() * (OBS+1));
+    critic.add_layer(tickers.size() * (OBS+1), 1);
+    critic.init(seed);
 
-    std::vector<double>().swap(yhat);
-    yhat = policy.forward(x);
-    for(double &x: yhat)
-        std::cout << x << " ";
-    std::cout << "\n";
+    copy(actor, target_actor);
+    copy(critic, target_critic);
 
     return 0;
 }
