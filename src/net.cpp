@@ -51,7 +51,7 @@ std::vector<double> Net::forward(std::vector<double> &x, bool noise) {
     std::normal_distribution<double> gaussian(0.00, 1.00);
     for(unsigned int l = 0; l < layers.size(); l++) {
         for(unsigned int n = 0; n < layers[l].out_features(); n++) {
-            double dot = 0.00, sum = 0.00;
+            double dot = 0.00;
             for(unsigned int i = 0; i < layers[l].in_features(); i++) {
                 if(l == 0)
                     dot += x[i] * layers[l].node(n)->weight(i);
