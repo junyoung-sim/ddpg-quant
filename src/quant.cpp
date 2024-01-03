@@ -24,6 +24,9 @@ std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state, doubl
 
 void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
            std::vector<std::vector<double>> &valuation, Net &actor, Net &critic, std::default_random_engine &seed) {
+    Net target_actor; copy(actor, target_actor);
+    Net target_critic; copy(critic, target_critic);
+
     const unsigned int START = OBS-1;
     const unsigned int TERMINAL = price[0].size()-2;
 
@@ -67,7 +70,9 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 std::shuffle(index.begin(), index.end(), seed);
                 index.erase(index.begin() + BATCH, index.end());
 
-                //for(unsigned int &k: index) {}
+                for(unsigned int &k: index) {
+                    optimize_critic(replay[k], critic, target_critic, target_actor, ALPHA, LAMBDA);
+                }
 
                 replay.erase(replay.begin());
             }
@@ -75,4 +80,54 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     }
 
     std::vector<Memory>().swap(replay);
+}
+
+std::vector<double> optimize_critic(Memory &memory, Net &critic,
+                                    Net &target_critic, Net &target_actor, double alpha, double lambda) {
+    std::vector<double> *state = memory.state();
+    std::vector<double> *next_state = memory.next_state();
+
+    std::vector<double> next = target_actor.forward(*next_state, false);
+    next.insert(next.end(), next_state->begin(), next_state->end());
+
+    std::vector<double> future = target_critic.forward(next, false);
+    double optimal = memory.reward() + GAMMA * future[0];
+
+    unsigned int num_of_tickers = state->size() / OBS;
+    std::vector<double> action_gradient(num_of_tickers, 0.00);
+
+    std::vector<double> q = critic.forward(*state, false);
+    for(int l = critic.num_of_layers() - 1; l >= 0; l--) {
+        double part = 0.00, grad = 0.00;
+        for(unsigned int n = 0; n < critic.layer(l)->out_features(); n++) {
+            if(l == critic.num_of_layers() - 1) part = -2.00 * (optimal - q[0]);
+            else part = critic.layer(l)->node(n)->err() * drelu(critic.layer(l)->node(n)->sum());
+
+            double updated_bias = critic.layer(l)->node(n)->bias() - alpha * part;
+            critic.layer(l)->node(n)->set_bias(updated_bias);
+
+            for(unsigned int i = 0; i < critic.layer(l)->in_features(); i++) {
+                if(l == 0) {
+                    grad = part * state->at(i);
+                    if(i < num_of_tickers)
+                        action_gradient[i] = part * critic.layer(l)->node(n)->weight(i);
+                }
+                else {
+                    grad = part * critic.layer(l-1)->node(i)->act();
+                    critic.layer(l-1)->node(i)->add_err(part * critic.layer(l)->node(n)->weight(i));
+                }
+
+                grad += lambda * critic.layer(l)->node(n)->weight(i);
+
+                double updated_weight = critic.layer(l)->node(n)->weight(i) - alpha * grad;
+                critic.layer(l)->node(n)->set_weight(i, updated_weight);
+            }
+        }
+    }
+
+    std::vector<double>().swap(next);
+    std::vector<double>().swap(future);
+    std::vector<double>().swap(q);
+
+    return action_gradient;
 }
