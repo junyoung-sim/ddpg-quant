@@ -10,6 +10,9 @@
 
 int main(int argc, char *argv[])
 {
+    std::cout << std::fixed;
+    std::cout.precision(4);
+
     std::string mode, name, cmd;
     std::string actor_path, critic_path;
     std::vector<std::string> tickers;
@@ -17,8 +20,7 @@ int main(int argc, char *argv[])
     std::vector<std::vector<double>> valuation;
     std::vector<std::thread> threads;
 
-    Net actor, target_actor;
-    Net critic, target_critic;
+    Net actor, critic;
 
     std::default_random_engine seed(std::chrono::system_clock::now().time_since_epoch().count());
 
@@ -58,8 +60,7 @@ int main(int argc, char *argv[])
     critic.init(seed);
     critic.load(critic_path);
 
-    copy(actor, target_actor);
-    copy(critic, target_critic);
+    build(tickers, price, valuation, actor, critic, seed);
 
     actor.save(actor_path);
     critic.save(critic_path);
