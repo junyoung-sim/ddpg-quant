@@ -12,6 +12,7 @@ std::vector<double> sample_state(std::vector<std::vector<double>> &env, unsigned
     for(unsigned int i = 0; i < env.size(); i++) {
         std::vector<double> dat = {env[i].begin() + t+1-OBS, env[i].begin() + t+1};
         state.insert(state.end(), dat.begin(), dat.end());
+        std::vector<double>().swap(dat);
     }
     return state;
 }
@@ -71,12 +72,19 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 index.erase(index.begin() + BATCH, index.end());
 
                 for(unsigned int &k: index) {
-                    optimize_critic(replay[k], critic, target_critic, target_actor, ALPHA, LAMBDA);
+                    std::vector<double> agrad = optimize_critic(replay[k], critic,
+                                                    target_critic, target_actor, ALPHA, LAMBDA);
+                    std::cout << agrad.size() << " " << agrad.back() << "\n";
+                    std::vector<double>().swap(agrad);
                 }
+                std::vector<unsigned int>().swap(index);
 
                 replay.erase(replay.begin());
             }
         }
+
+        copy(actor, target_actor);
+        copy(critic, target_critic);
     }
 
     std::vector<Memory>().swap(replay);
@@ -108,7 +116,7 @@ std::vector<double> optimize_critic(Memory &memory, Net &critic,
 
             for(unsigned int i = 0; i < critic.layer(l)->in_features(); i++) {
                 if(l == 0) {
-                    grad = part * state->at(i);
+                    grad = part * (*state)[i];
                     if(i < num_of_tickers)
                         action_gradient[i] = part * critic.layer(l)->node(n)->weight(i);
                 }

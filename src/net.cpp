@@ -126,10 +126,10 @@ void copy(Net &src, Net &dst) {
         for(unsigned int n = 0; n < out; n++) {
             for(unsigned int i = 0; i < in; i++) {
                 double weight = src.layer(l)->node(n)->weight(i);
-                dst.back()->node(n)->set_weight(i, weight);
+                dst.layer(l)->node(n)->set_weight(i, weight);
             }
             double bias = src.layer(l)->node(n)->bias();
-            dst.back()->node(n)->set_bias(bias);
+            dst.layer(l)->node(n)->set_bias(bias);
         }
     }
 
