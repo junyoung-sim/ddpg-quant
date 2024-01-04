@@ -44,7 +44,8 @@ std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state, doubl
 void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
            std::vector<std::vector<double>> &valuation, Net &actor, Net &critic, std::default_random_engine &seed);
 
-std::vector<double> optimize_critic(Memory &memory, Net &critic,
-                                    Net &target_critic, Net &target_actor, double alpha, double lambda);
+void optimize(Memory &memory, Net &critic, Net &target_critic,
+              Net &actor, Net &target_actor, double alpha, double lambda);
+
 
 #endif

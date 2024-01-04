@@ -71,12 +71,9 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 std::shuffle(index.begin(), index.end(), seed);
                 index.erase(index.begin() + BATCH, index.end());
 
-                for(unsigned int &k: index) {
-                    std::vector<double> agrad = optimize_critic(replay[k], critic,
-                                                    target_critic, target_actor, ALPHA, LAMBDA);
-                    std::cout << agrad.size() << " " << agrad.back() << "\n";
-                    std::vector<double>().swap(agrad);
-                }
+                for(unsigned int &k: index)
+                    optimize(replay[k], critic, target_critic, actor, target_actor, ALPHA, LAMBDA);
+                
                 std::vector<unsigned int>().swap(index);
 
                 replay.erase(replay.begin());
@@ -90,21 +87,26 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     std::vector<Memory>().swap(replay);
 }
 
-std::vector<double> optimize_critic(Memory &memory, Net &critic,
-                                    Net &target_critic, Net &target_actor, double alpha, double lambda) {
+void optimize(Memory &memory, Net &critic, Net &target_critic,
+              Net &actor, Net &target_actor, double alpha, double lambda) {
     std::vector<double> *state = memory.state();
+    std::vector<double> *action = memory.action();
+    
+    std::vector<double> state_action;
+    state_action.insert(state_action.end(), action->begin(), action->end());
+    state_action.insert(state_action.end(), state->begin(), state->end());
+
     std::vector<double> *next_state = memory.next_state();
+    std::vector<double> next_state_action = target_actor.forward(*next_state, false);
+    next_state_action.insert(next_state_action.end(), next_state->begin(), next_state->end());
 
-    std::vector<double> next = target_actor.forward(*next_state, false);
-    next.insert(next.end(), next_state->begin(), next_state->end());
-
-    std::vector<double> future = target_critic.forward(next, false);
+    std::vector<double> future = target_critic.forward(next_state_action, false);
     double optimal = memory.reward() + GAMMA * future[0];
 
     unsigned int num_of_tickers = state->size() / OBS;
     std::vector<double> action_gradient(num_of_tickers, 0.00);
 
-    std::vector<double> q = critic.forward(*state, false);
+    std::vector<double> q = critic.forward(state_action, false);
     for(int l = critic.num_of_layers() - 1; l >= 0; l--) {
         double part = 0.00, grad = 0.00;
         for(unsigned int n = 0; n < critic.layer(l)->out_features(); n++) {
@@ -116,7 +118,7 @@ std::vector<double> optimize_critic(Memory &memory, Net &critic,
 
             for(unsigned int i = 0; i < critic.layer(l)->in_features(); i++) {
                 if(l == 0) {
-                    grad = part * (*state)[i];
+                    grad = part * state_action[i];
                     if(i < num_of_tickers)
                         action_gradient[i] = part * critic.layer(l)->node(n)->weight(i);
                 }
@@ -132,10 +134,4 @@ std::vector<double> optimize_critic(Memory &memory, Net &critic,
             }
         }
     }
-
-    std::vector<double>().swap(next);
-    std::vector<double>().swap(future);
-    std::vector<double>().swap(q);
-
-    return action_gradient;
 }
