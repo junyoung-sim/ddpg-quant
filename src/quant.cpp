@@ -5,6 +5,7 @@
 #include <random>
 #include <algorithm>
 #include <thread>
+#include <fstream>
 
 #include "../lib/quant.hpp"
 
@@ -39,12 +40,16 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
 
     std::vector<Memory> replay;
 
+    std::ofstream out("./res/build");
+    out << "mean_return\n";
+
     for(unsigned int itr = 1; itr <= ITR; itr++) {
         t0 = dist(generator);
-        double reward_sum = 0.00, reward_mean = 0.00;
+        double reward_sum = 0.00, reward_mean = 0.00, reward_total = 1.00;
+        double eps = (EPS_MIN - EPS_INIT) / (ITR-1) * (itr-1) + EPS_INIT;
         for(unsigned int t = t0; t < t0+FRAME; t++) {
             std::vector<double> state = sample_state(valuation, t);
-            std::vector<double> action = epsilon_greedy(actor, state, EPS);
+            std::vector<double> action = epsilon_greedy(actor, state, eps);
 
             double reward = 0.00;
             for(unsigned int i = 0; i < tickers.size(); i++) {
@@ -54,6 +59,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             reward = (reward - 1.00) * 100;
             reward_sum += reward;
             reward_mean = reward_sum / (t-t0+1);
+            reward_total *= 1.00 + reward / 100;
 
             std::vector<double> next_state = sample_state(valuation, t+1);
 
@@ -62,7 +68,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 std::cout << tickers[i] << ":" << action[i];
                 if(i != tickers.size() - 1) std::cout << ", ";
             }
-            std::cout << "] R=" << reward << " MR=" << reward_mean << "\n";
+            std::cout << "] R=" << reward << " MR=" << reward_mean << " TR=" << reward_total << "\n";
 
             replay.push_back(Memory(state, action, next_state, reward));
 
@@ -81,9 +87,13 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             }
         }
 
+        out << reward_mean << "\n";
+
         copy(actor, target_actor);
         copy(critic, target_critic);
     }
+
+    out.close();
 
     std::vector<Memory>().swap(replay);
 }
@@ -103,8 +113,8 @@ void optimize_critic(Net &critic, std::vector<double> &state_action, std::vector
                 if(l == 0) {
                     grad = part * state_action[i];
                     if(i < num_of_tickers) {
-                        flag[i] = true;
                         agrad[i] = part * critic.layer(l)->node(n)->weight(i);
+                        flag[i] = true;
                     }
                 }
                 else {

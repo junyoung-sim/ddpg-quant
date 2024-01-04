@@ -13,7 +13,8 @@
 #define CAPACITY 1000
 #define BATCH 10
 
-#define EPS 0.20
+#define EPS_INIT 0.50
+#define EPS_MIN 0.10
 #define GAMMA 0.90
 #define ALPHA 0.00000001
 #define LAMBDA 0.10
