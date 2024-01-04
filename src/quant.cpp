@@ -4,6 +4,7 @@
 #include <string>
 #include <random>
 #include <algorithm>
+#include <thread>
 
 #include "../lib/quant.hpp"
 
@@ -87,30 +88,12 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     std::vector<Memory>().swap(replay);
 }
 
-void optimize(Memory &memory, Net &critic, Net &target_critic,
-              Net &actor, Net &target_actor, double alpha, double lambda) {
-    std::vector<double> *state = memory.state();
-    std::vector<double> *action = memory.action();
-    
-    std::vector<double> state_action;
-    state_action.insert(state_action.end(), action->begin(), action->end());
-    state_action.insert(state_action.end(), state->begin(), state->end());
-
-    std::vector<double> *next_state = memory.next_state();
-    std::vector<double> next_state_action = target_actor.forward(*next_state, false);
-    next_state_action.insert(next_state_action.end(), next_state->begin(), next_state->end());
-
-    std::vector<double> future = target_critic.forward(next_state_action, false);
-    double optimal = memory.reward() + GAMMA * future[0];
-
-    unsigned int num_of_tickers = state->size() / OBS;
-    std::vector<double> action_gradient(num_of_tickers, 0.00);
-
-    std::vector<double> q = critic.forward(state_action, false);
+void optimize_critic(Net &critic, std::vector<double> &state_action, std::vector<double> &agrad,
+                     double optimal, double q, double alpha, double lambda, unsigned int num_of_tickers) {
     for(int l = critic.num_of_layers() - 1; l >= 0; l--) {
         double part = 0.00, grad = 0.00;
         for(unsigned int n = 0; n < critic.layer(l)->out_features(); n++) {
-            if(l == critic.num_of_layers() - 1) part = -2.00 * (optimal - q[0]);
+            if(l == critic.num_of_layers() - 1) part = -2.00 * (optimal - q);
             else part = critic.layer(l)->node(n)->err() * drelu(critic.layer(l)->node(n)->sum());
 
             double updated_bias = critic.layer(l)->node(n)->bias() - alpha * part;
@@ -120,7 +103,7 @@ void optimize(Memory &memory, Net &critic, Net &target_critic,
                 if(l == 0) {
                     grad = part * state_action[i];
                     if(i < num_of_tickers)
-                        action_gradient[i] = part * critic.layer(l)->node(n)->weight(i);
+                        agrad[i] = part * critic.layer(l)->node(n)->weight(i);
                 }
                 else {
                     grad = part * critic.layer(l-1)->node(i)->act();
@@ -134,4 +117,71 @@ void optimize(Memory &memory, Net &critic, Net &target_critic,
             }
         }
     }
+}
+
+void optimize_actor(Net &actor, std::vector<double> &state, std::vector<double> &action,
+                    std::vector<double> &agrad, double q, double alpha, double lambda) {
+    for(int l = actor.num_of_layers() - 1; l >= 0; l--) {
+        double part = 0.00, grad = 0.00;
+        for(unsigned int n = 0; n < actor.layer(l)->out_features(); n++) {
+            if(l == actor.num_of_layers() - 1) {
+                while(agrad[n] == RAND_MAX);
+                part = -1.00 / q * agrad[n] * (action[n] - 1);
+            }
+            else part = actor.layer(l)->node(n)->err() * drelu(actor.layer(l)->node(n)->sum());
+
+            double updated_bias = actor.layer(l)->node(n)->bias() - alpha * part;
+            actor.layer(l)->node(n)->set_bias(updated_bias);
+
+            for(unsigned int i = 0; i < actor.layer(l)->in_features(); i++) {
+                if(l == 0) grad = part * state[i];
+                else {
+                    grad = part * actor.layer(l-1)->node(i)->act();
+                    actor.layer(l-1)->node(i)->add_err(part * actor.layer(l)->node(n)->weight(i));
+                }
+
+                grad += lambda * actor.layer(l)->node(n)->weight(i);
+
+                double updated_weight = actor.layer(l)->node(n)->weight(i) - alpha * grad;
+                actor.layer(l)->node(n)->set_weight(i, updated_weight);
+            }
+        }
+    }
+}
+
+void optimize(Memory &memory, Net &critic, Net &target_critic,
+              Net &actor, Net &target_actor, double alpha, double lambda) {
+    std::vector<double> *state = memory.state();
+    std::vector<double> *action = memory.action();
+
+    std::vector<double> state_action;
+    state_action.insert(state_action.end(), action->begin(), action->end());
+    state_action.insert(state_action.end(), state->begin(), state->end());
+
+    std::vector<double> q = critic.forward(state_action, false);
+
+    std::vector<double> *next_state = memory.next_state();
+    std::vector<double> next_state_action = target_actor.forward(*next_state, false);
+    next_state_action.insert(next_state_action.end(), next_state->begin(), next_state->end());
+
+    std::vector<double> future = target_critic.forward(next_state_action, false);
+    double optimal = memory.reward() + GAMMA * future[0];
+
+    unsigned int num_of_tickers = state->size() / OBS;
+    std::vector<double> agrad(num_of_tickers, RAND_MAX);
+
+    std::thread critic_optimizer(optimize_critic, std::ref(critic), std::ref(state_action),
+                             std::ref(agrad), optimal, q[0], ALPHA, LAMBDA, num_of_tickers);
+
+    std::thread actor_optimizer(optimize_actor, std::ref(actor), std::ref(*state),
+                                std::ref(*action), std::ref(agrad), q[0], ALPHA, LAMBDA);
+
+    critic_optimizer.join();
+    actor_optimizer.join();
+
+    std::vector<double>().swap(state_action);
+    std::vector<double>().swap(q);
+    std::vector<double>().swap(next_state_action);
+    std::vector<double>().swap(future);
+    std::vector<double>().swap(agrad);
 }
