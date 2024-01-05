@@ -25,7 +25,7 @@ std::vector<std::vector<double>> read_csv(std::string path) {
         for(unsigned int col = 0; col < columns; col++) {
             val = std::stod(line.substr(0, line.find(",")));
             dat[col].push_back(val);
-            line = line.substr(line.find("," + 1));
+            line = line.substr(line.find(",") + 1);
         }
     }
 
