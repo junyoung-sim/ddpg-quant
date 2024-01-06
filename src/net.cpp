@@ -4,6 +4,7 @@
 #include <random>
 #include <algorithm>
 #include <fstream>
+#include <iostream>
 
 #include "../lib/net.hpp"
 
@@ -53,14 +54,12 @@ std::vector<double> Net::forward(std::vector<double> &x, bool noise) {
         for(unsigned int n = 0; n < layers[l].out_features(); n++) {
             double dot = 0.00;
             for(unsigned int i = 0; i < layers[l].in_features(); i++) {
-                if(l == 0)
-                    dot += x[i] * layers[l].node(n)->weight(i);
-                else
-                    dot += layers[l-1].node(i)->act() * layers[l].node(n)->weight(i);
+                double weight = layers[l].node(n)->weight(i) * (noise ? gaussian(*seed) : 1.00);
+                dot += (l == 0 ? x[i] : layers[l-1].node(i)->act()) * weight;
             }
 
             layers[l].node(n)->init();
-            layers[l].node(n)->set_sum(dot + layers[l].node(n)->bias() + (noise ? gaussian(*seed) : 0.00));
+            layers[l].node(n)->set_sum(dot + layers[l].node(n)->bias());
 
             if(l == layers.size() - 1) {
                 if(softmax) expsum += exp(layers[l].node(n)->sum());

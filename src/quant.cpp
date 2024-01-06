@@ -33,21 +33,15 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     const unsigned int START = OBS-1;
     const unsigned int TERMINAL = price[0].size()-2;
 
-    unsigned int t0;
-    std::random_device rdev;
-    std::mt19937 generator(rdev());
-    std::uniform_int_distribution<int> dist(START, TERMINAL+1-FRAME);
-
     std::vector<Memory> replay;
 
     std::ofstream out("./res/build");
     out << "mean_return\n";
 
     for(unsigned int itr = 1; itr <= ITR; itr++) {
-        t0 = dist(generator);
         double reward_sum = 0.00, reward_mean = 0.00;
         double eps = (EPS_MIN - EPS_INIT) / (ITR-1) * (itr-1) + EPS_INIT;
-        for(unsigned int t = t0; t < t0+FRAME; t++) {
+        for(unsigned int t = START; t <= TERMINAL; t++) {
             std::vector<double> state = sample_state(valuation, t);
             std::vector<double> action = epsilon_greedy(actor, state, eps);
 
@@ -58,7 +52,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             }
             reward = (reward - 1.00) * 100;
             reward_sum += reward;
-            reward_mean = reward_sum / (t-t0+1);
+            reward_mean = reward_sum / (t-START+1);
 
             std::vector<double> next_state = sample_state(valuation, t+1);
 
@@ -71,8 +65,8 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
 
             replay.push_back(Memory(state, action, next_state, reward));
 
-            if(replay.size() == CAPACITY) {
-                std::vector<unsigned int> index(CAPACITY, 0);
+            if(itr > 1) {
+                std::vector<unsigned int> index(replay.size(), 0);
                 std::iota(index.begin(), index.end(), 0);
                 std::shuffle(index.begin(), index.end(), seed);
                 index.erase(index.begin() + BATCH, index.end());

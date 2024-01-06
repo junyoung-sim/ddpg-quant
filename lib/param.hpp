@@ -8,9 +8,6 @@
 #define OBS 100
 
 #define ITR 100
-#define FRAME 1000
-
-#define CAPACITY 1000
 #define BATCH 10
 
 #define EPS_INIT 0.50
