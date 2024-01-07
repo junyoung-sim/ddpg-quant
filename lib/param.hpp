@@ -7,7 +7,7 @@
 
 #define OBS 100
 
-#define ITR 100
+#define ITR 10
 #define BATCH 10
 
 #define EPS_INIT 1.00

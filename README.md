@@ -60,3 +60,21 @@ In this application, let the state space be the valuation series of N assets in 
 12) L2 Regularization: 0.10
 
 **Testing in progress. Looking good so far, will post results when available!**
+
+## References
+
+Thanks for teaching me!
+
+http://www.columbia.edu/~ks20/FE-Notes/4700-07-Notes-BM.pdf
+
+http://www.columbia.edu/~ks20/FE-Notes/4700-07-Notes-GBM.pdf
+
+https://arxiv.org/abs/1509.02971
+
+https://arxiv.org/pdf/2103.11455.pdf
+
+https://spinningup.openai.com/en/latest/algorithms/ddpg.html
+
+https://openai.com/research/better-exploration-with-parameter-noise
+
+... and many others :D
