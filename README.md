@@ -19,12 +19,44 @@ Notice that the critically high or low v-scores and zero-crossings coincide with
 
 Suppose we have a portfolio with N distinct assets and would like to optimize the weights of each asset every market day (really any period) to maximize profit. Deep Deterministic Policy Gradients (DDPG) can be a useful technique to tackle such a problem because of the following characteristics:
 
-1) DDPG is an actor-critic model.
-2) DDPG can handle continuous action spaces (unlike deep q-networks with discrete action spaces).
+1) DDPG is consists of two components: the actor network and critic network.
 2) DDPG can directly map reward-maximizing actions to certain states.
+3) DDPG can handle continuous action spaces unlike deep q-networks with discrete action spaces.
 
 ### Actor and Critic in DDPG
 
-The actor network observes a state from the environment to make a reward-maximizing decision. In this application, the actor network observes the valuation series (n=60, m=1000, k=20) of N assets in a given portfolio and outputs the weights allocated for each asset via a softmax layer. The actor's parameters should be updated via the following objective function.
+The actor network ($\mu(s|\phi)=a$) observes a state from an environment to make a reward-maximizing decision. Note that a softmax layer can be used to implement a continuous action space. The actor's parameters should be updated via the following objective function.
 
 $$J=-\log{Q(s,a)}$$
+
+What is $Q(s,a)$? It is the expected reward (q-value), predicted by the the critic network with parameters $\theta$, of performing the action space $a$ given state $s$. Since we would like to maximize reward, we must maximize $Q(s,a)$, thus minimizing $J$ with respect to $\phi$ via gradient descent would optimize the actor's behavior. Simultaneously, we would like the critic network's $Q(s,a)$ to be a high-quality approximation of the true optimal q-value as shown in the Bellman equation below. Note that $r$ is the immediate reward observed after performing $a$ given $s$ and $Q'(s',a')$ is a prediction of future rewards, discounted by $\gamma$, that could be observed by performing $a'$ after state $s'$ that follows $s$.
+
+$$Q^{*}(s,a)=r+{\gamma}Q'(s',a')$$
+
+For stable learning performance, $Q'$ is obatined from a delayed copy (aka target) of the critic network. Similarly, $a'$ is the action space returned by a delayed copy of the actor network given $s'$. Minimizing the following objective function with respect to $\theta$ would improve the critic network's q-value estimations.
+
+$$L=[Q^{*}(s,a)-Q{s,a}]^2$$
+
+Optimizing $J$ and $L$ requires all the techniques used in standard deep Q-learning (e.g., replay memory) with some modifications:
+
+1) We must compute $\frac{dQ}{dA}$ for each action (action gradients) while updating the critic parameters such that we can compute $\frac{dJ}{d\phi}=\frac{dJ}{dQ}\frac{dQ}{dA}\frac{dA}{d\phi}$ for the actor (parallelized via CPU multithreading in this algorithm).
+2) We must implement parameter noise, which adds gaussian noise to the actor's parameters to enable exploration while learning. Adding noise to the parameters is proven to be more efficient than adding noise to the action space.
+
+### Setup & Results
+
+In this application, let the state space be the valuation series of N assets in a given portfolio and the action space be the weights allocated for each asset. The N assets could be anything, so let's build a model for optimizing a bond portfolio (SHY: 1-3 yr UST, IEF: 10 yr UST, TLT: 20 yr UST, HYG: high-yield junk, LQD: investment grade). The following are some hyperparameters for training:
+
+1) Historical Period: 2002 - 2023
+2) Iterations: 100 (traverse entire historical period per iteration)
+3) V-Score Observation Period: 60-days
+4) V-Score Extrapolation Period: 20-days
+5) V-Score Simulation Epochs: 1000
+6) State Space Look-Back: 100-days (per asset)
+7) Batch: 10 experiences
+8) Initial Epsilon: 0.50 (probability of adding parameter noise)
+9) Minimum Epsilon: 0.10 (decay linearly while training)
+10) Gamma: 0.90
+11) Learning Rate: 0.00000001
+12) L2 Regularization: 0.10
+
+**Testing in progress. Looking good so far, will post results as soon as it is ready!**
