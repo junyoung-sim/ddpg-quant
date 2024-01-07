@@ -27,4 +27,4 @@ Suppose we have a portfolio with N distinct assets and would like to optimize th
 
 The actor network observes a state from the environment to make a reward-maximizing decision. In this application, the actor network observes the valuation series (n=60, m=1000, k=20) of N assets in a given portfolio and outputs the weights allocated for each asset via a softmax layer. The actor's parameters should be updated via the following objective function.
 
-$$J=-logQ(s,a)$$
+$$J=-\log{Q(s,a)}$$
