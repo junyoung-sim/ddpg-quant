@@ -53,10 +53,10 @@ In this application, let the state space be the valuation series of N assets in 
 5) V-Score Simulation Epochs: 1000
 6) State Space Look-Back: 100-days (per asset)
 7) Batch: 10 experiences
-8) Initial Epsilon: 0.50 (probability of adding parameter noise)
-9) Minimum Epsilon: 0.10 (decay linearly while training)
+8) Initial Epsilon: 1.00 (probability of adding parameter noise)
+9) Minimum Epsilon: 0.10 (decay linearly per iteration)
 10) Gamma: 0.90
 11) Learning Rate: 0.00000001
 12) L2 Regularization: 0.10
 
-**Testing in progress. Looking good so far, will post results as soon as it is ready!**
+**Testing in progress. Looking good so far, will post results when available!**
