@@ -64,7 +64,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
 
             replay.push_back(Memory(state, action, next_state, reward));
 
-            if(itr > 1) {
+            if(replay.size() == CAPACITY) {
                 std::vector<unsigned int> index(replay.size(), 0);
                 std::iota(index.begin(), index.end(), 0);
                 std::shuffle(index.begin(), index.end(), seed);

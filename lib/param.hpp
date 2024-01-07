@@ -7,10 +7,11 @@
 
 #define OBS 100
 
-#define ITR 10
+#define ITR 50
+#define CAPACITY 10000
 #define BATCH 10
 
-#define EPS_INIT 1.00
+#define EPS_INIT 0.50
 #define EPS_MIN 0.10
 #define GAMMA 0.90
 #define ALPHA 0.00000001

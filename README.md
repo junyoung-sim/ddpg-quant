@@ -33,7 +33,7 @@ What is $Q(s,a)$? It is the expected reward (q-value), predicted by the the crit
 
 $$Q^{*}(s,a)=r+{\gamma}Q'(s',a')$$
 
-For stable learning performance, $Q'$ is obatined from a delayed copy (aka target) of the critic network. Similarly, $a'$ is the action space returned by a delayed copy of the actor network given $s'$. Minimizing the following objective function with respect to $\theta$ would improve the critic network's q-value estimations.
+For stable learning performance, $Q'$ is obtained from a delayed copy (aka target) of the critic network. Similarly, $a'$ is the action space returned by a delayed copy of the actor network given $s'$. Minimizing the following objective function with respect to $\theta$ would improve the critic network's q-value estimations.
 
 $$L=[Q^{*}(s,a)-Q{s,a}]^2$$
 
@@ -44,16 +44,16 @@ Optimizing $J$ and $L$ requires all the techniques used in standard deep Q-learn
 
 ### Setup & Results
 
-In this application, let the state space be the valuation series of N assets in a given portfolio and the action space be the weights allocated for each asset. The N assets could be anything, so let's build a model for optimizing a bond portfolio (SHY: 1-3 yr UST, IEF: 10 yr UST, TLT: 20 yr UST, HYG: high-yield junk, LQD: investment grade). The following are some hyperparameters for training:
+In this application, let the state space be the valuation series of N assets in a given portfolio and the action space be the weights allocated for each asset. The N assets could be anything, so let's build a model for optimizing a standard portfolio (SPY: S&P 500, IEF: 10-yr UST, EUR=X: Euro-Dollar, GSG: Commodities). The following are some hyperparameters for training:
 
-1) Historical Period: 2002 - 2023
-2) Iterations: 100 (traverse entire historical period per iteration)
+1) Historical Period: 2006 - 2023
+2) Iterations: 50 (traverse entire historical period per iteration)
 3) V-Score Observation Period: 60-days
 4) V-Score Extrapolation Period: 20-days
 5) V-Score Simulation Epochs: 1000
 6) State Space Look-Back: 100-days (per asset)
 7) Batch: 10 experiences
-8) Initial Epsilon: 1.00 (probability of adding parameter noise)
+8) Initial Epsilon: 0.50 (probability of adding parameter noise)
 9) Minimum Epsilon: 0.10 (decay linearly per iteration)
 10) Gamma: 0.90
 11) Learning Rate: 0.00000001
