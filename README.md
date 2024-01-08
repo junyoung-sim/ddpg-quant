@@ -15,21 +15,21 @@ At a particular time ***t***, the model observes the security's historical data 
 
 Notice that the critically high or low v-scores and zero-crossings coincide with the extremas and major turning points in the stock index's price movement.
 
-## Portfolio Optimization with Deep Deterministic Policy Gradient and GBM
+## Deep Deterministic Policy Gradient
 
-Suppose we have a portfolio with N distinct assets and would like to optimize the weights of each asset every market day (really any period) to maximize profit. Deep Deterministic Policy Gradients (DDPG) can be a useful technique to tackle such a problem because of the following characteristics:
+The following are some major characteristics of Deep Deterministic Policy Gradients (DDPG):
 
-1) DDPG is consists of two components: the actor network and critic network.
+1) DDPG consists of two components: the actor network and critic network.
 2) DDPG can directly map reward-maximizing actions to certain states.
 3) DDPG can handle continuous action spaces unlike deep q-networks with discrete action spaces.
 
 ### Actor and Critic in DDPG
 
-The actor network ($\mu(s|\phi)=a$) observes a state from an environment to make a reward-maximizing decision. Note that a softmax layer can be used to implement a continuous action space. The actor's parameters should be updated via the following objective function.
+The actor network, $\mu(s|\phi)=a$, observes a state from an environment to make a decision where the action space can be continuous. Since the actor must maximize reward, its parameters should be updated by minimizing the following objective function.
 
 $$J=-\log{Q(s,a)}$$
 
-What is $Q(s,a)$? It is the expected reward (q-value), predicted by the the critic network with parameters $\theta$, of performing the action space $a$ given state $s$. Since we would like to maximize reward, we must maximize $Q(s,a)$, thus minimizing $J$ with respect to $\phi$ via gradient descent would optimize the actor's behavior. Simultaneously, we would like the critic network's $Q(s,a)$ to be a high-quality approximation of the true optimal q-value as shown in the Bellman equation below. Note that $r$ is the immediate reward observed after performing $a$ given $s$ and $Q'(s',a')$ is a prediction of future rewards, discounted by $\gamma$, that could be observed by performing $a'$ after state $s'$ that follows $s$.
+What is $Q(s,a)$? It is the expected reward (q-value), predicted by the the critic network with parameters $\theta$, of performing the action space $a$ given state $s$. Thus, maximizing $Q(s,a)$ is equivalent to minimizing $J$ with respect to $\phi$ via gradient descent to optimize the actor. Simultaneously, we would like the critic network's $Q(s,a)$ to be a high-quality approximation of the true optimal q-value as shown in the Bellman equation below. Note that $r$ is the immediate reward observed after performing $a$ given $s$ and $Q'(s',a')$ is a prediction of future rewards, discounted by $\gamma$, that could be observed by performing $a'$ after state $s'$ that follows $s$.
 
 $$Q^{*}(s,a)=r+{\gamma}Q'(s',a')$$
 
@@ -42,24 +42,11 @@ Optimizing $J$ and $L$ requires all the techniques used in standard deep Q-learn
 1) We must compute $\frac{dQ}{dA}$ for each action (action gradients) while updating the critic parameters such that we can compute $\frac{dJ}{d\phi}=\frac{dJ}{dQ}\frac{dQ}{dA}\frac{dA}{d\phi}$ for the actor (parallelized via CPU multithreading in this algorithm).
 2) We must implement parameter noise, which adds gaussian noise to the actor's parameters to enable exploration while learning. Adding noise to the parameters is proven to be more efficient than adding noise to the action space.
 
-### Setup & Results
+## Portfolio Optimization
 
-In this application, let the state space be the valuation series of N assets in a given portfolio and the action space be the weights allocated for each asset. The N assets could be anything, so let's build a model for optimizing a standard portfolio (SPY: S&P 500, IEF: 10-yr UST, EUR=X: Euro-Dollar, GSG: Commodities). The following are some hyperparameters for training:
+Suppose we have a portfolio with N distinct assets and would like to optimize the weights of each asset every market day (really any period) to maximize profit. DDPG is a suitable tool to tackle this problem with the following setup and learning hyperparameters:
 
-1) Historical Period: 2006 - 2023
-2) Iterations: 50 (traverse entire historical period per iteration)
-3) V-Score Observation Period: 60-days
-4) V-Score Extrapolation Period: 20-days
-5) V-Score Simulation Epochs: 1000
-6) State Space Look-Back: 100-days (per asset)
-7) Batch: 10 experiences
-8) Initial Epsilon: 0.50 (probability of adding parameter noise)
-9) Minimum Epsilon: 0.10 (decay linearly per iteration)
-10) Gamma: 0.90
-11) Learning Rate: 0.00000001
-12) L2 Regularization: 0.10
-
-**Testing in progress. Looking good so far, will post results when available!**
+**Implementation and testing in progress. Will post results when available!**
 
 ## References
 
