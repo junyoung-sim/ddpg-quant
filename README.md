@@ -49,11 +49,11 @@ Suppose we have a portfolio with N distinct assets and would like to optimize th
 **Holdings**
 | Ticker | Name |
 |--------|------|
-| SHY | US Treasury 1-3 year  |
-| IEF | US Treasury 7-10 year |
-| HYG | High-Yield Junk       |
-| LQD | Investment-Grade      |
-| MBB | Mortgage-Backed       |
+| SHY | US 1-3 year Treasury             |
+| IEF | US 7-10 year Treasury            |
+| HYG | High-Yield Corporate (Junk)      |
+| LQD | Investment-Grade Corporate       |
+| MBB | Investment-Grade Mortgage-Backed |
 
 
 SHY (1-3 yr UST), IEF (10 yr UST), HYG (High-Yield Junk), LQD (Investment Grade), MBB (Mortgage-Backed)
