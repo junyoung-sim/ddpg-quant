@@ -55,21 +55,22 @@ Suppose we have a portfolio with N distinct assets and would like to optimize th
 | LQD | Investment-Grade Corporate       |
 | MBB | Investment-Grade Mortgage-Backed |
 
-
-SHY (1-3 yr UST), IEF (10 yr UST), HYG (High-Yield Junk), LQD (Investment Grade), MBB (Mortgage-Backed)
-2) **Time Period**: Mar 2007 - Jan 2024
-3) **V-Score Observation Period**: 60-days
-4) **V-Score Extrapolation Period**: 20-days
-5) **V-Score Simulation Epoch**: 1000
-6) **Look Back**: 100-days (per asset)
-7) **Iterations**: 50
-8) **Replay Memory Capacity**: 20000
-9) **Batch**: 10
-10) **Initial Epsilon ($\epsilon_0$)**: 0.50
-11) **Minimum Epsilon ($\epsilon_{min}$)**: 0.10 (decay linearly per iteration)
-12) **Discount Factor ($\gamma$)**: 0.90
-13) **Learning Rate ($\alpha$)**: 0.00000001
-14) **L2 Regularization ($\lambda$)**: 0.10
+**Hyperparameters**
+| Parameter | Value |
+|-----------|-------|
+| Time Period | Mar 2007 - Jan 2024 |
+| V-Score Observation Period | 60-days |
+| V-Score Extrapolation Period | 20-days |
+| V-Score Simulation Epoch | 1000 |
+| Look-Back | 100-days (per asset) |
+| Iterations | 50 |
+| Replay Memory Capacity | 20000 |
+| Batch | 10 |
+| Initial Epsilon ($\epsilon_0$) | 0.50 |
+| Minimum Epsilon ($\epsilon_{min}$) | 0.10 (decay linearly per iteration) |
+| Discount Factor ($\gamma$) | 0.90 |
+| Learning Rate ($\alpha$) | 0.00000001 |
+| L2 Regularization ($\lambda$) | 0.10 |
 
 **Testing in progress. Will post results when available!**
 
