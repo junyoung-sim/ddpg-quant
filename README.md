@@ -31,7 +31,7 @@ $$J=-\log{Q(s,a)}$$
 
 What is $Q(s,a)$? It is the expected reward (q-value), predicted by the the critic network with parameters $\theta$, of performing the action space $a$ given state $s$. Thus, maximizing $Q(s,a)$ is equivalent to minimizing $J$ with respect to $\phi$ via gradient descent to optimize the actor. Simultaneously, we would like the critic network's $Q(s,a)$ to be a high-quality approximation of the true optimal q-value as shown in the Bellman equation below. Note that $r$ is the immediate reward observed after performing $a$ given $s$ and $Q'(s',a')$ is a prediction of future rewards, discounted by $\gamma$, that could be observed by performing $a'$ after state $s'$ that follows $s$.
 
-$$Q^{*}(s,a)=r+{\gamma}Q'(s',a')$$
+$$Q^{*}(s,a)=r+{\gamma}Q'(s',a'=\mu'(s'))$$
 
 For stable learning performance, $Q'$ is obtained from a delayed copy (aka target) of the critic network. Similarly, $a'$ is the action space returned by a delayed copy of the actor network given $s'$. Minimizing the following objective function with respect to $\theta$ would improve the critic network's q-value estimations.
 
