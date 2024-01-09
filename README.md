@@ -46,6 +46,22 @@ Optimizing $J$ and $L$ requires all the techniques used in standard deep Q-learn
 
 Suppose we have a portfolio with N distinct assets and would like to optimize the weights of each asset every market day (really any period) to maximize profit. DDPG is a suitable tool to tackle this problem with the following setup and learning hyperparameters:
 
+**Holdings**: SHY (1-3 yr UST), IEF (10 yr UST), HYG (High-Yield Junk), LQD (Investment Grade), MBB (Mortgage-Backed)
+**Time Period**: Mar 2007 - Jan 2024
+**V-Score Observation Period**: 60-days
+**V-Score Extrapolation Period**: 20-days
+**V-Score Simulation Epoch**: 1000
+**Look Back**: 100-days (per asset)
+**Iterations**: 50
+**Replay Memory Capacity**: 20000
+**Batch**: 10
+**Initial Epsilon ($\epsilon_0$)**: 0.50
+**Minimum Epsilon ($\epsilon_{min}$)**: 0.10
+**Discount Factor ($\gamma$)**: 0.90
+**Learning Rate ($\alpha$)**: 0.00000001
+**L2 Regularization ($\lambda$)**: 0.10
+
+
 **Implementation and testing in progress. Will post results when available!**
 
 ## References
