@@ -23,7 +23,7 @@ The following are some major characteristics of Deep Deterministic Policy Gradie
 2) DDPG can directly map reward-maximizing actions to certain states.
 3) DDPG can handle continuous action spaces unlike deep q-networks with discrete action spaces.
 
-### Actor and Critic in DDPG
+### DDPG in a nutshell
 
 The actor network, $\mu(s|\phi)=a$, observes a state from an environment to make a decision where the action space can be continuous. Since the actor must maximize reward, its parameters should be updated by minimizing the following objective function.
 
