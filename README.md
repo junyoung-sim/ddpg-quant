@@ -35,7 +35,7 @@ $$Q^{*}(s,a)=r+{\gamma}Q'(s',a'=\mu'(s'))$$
 
 For stable learning performance, $Q'$ is obtained from a delayed copy (aka target) of the critic network. Similarly, $a'$ is the action space returned by a delayed copy of the actor network given $s'$. Minimizing the following objective function with respect to $\theta$ would improve the critic network's q-value estimations.
 
-$$L=[Q^{*}(s,a)-Q{s,a}]^2$$
+$$L=[Q^{*}(s,a)-Q(s,a)]^2$$
 
 Optimizing $J$ and $L$ requires all the techniques used in standard deep Q-learning (e.g., replay memory) with some modifications:
 
@@ -71,6 +71,8 @@ Suppose we have a portfolio with N distinct assets and would like to optimize th
 | Discount Factor ($\gamma$) | 0.90 |
 | Learning Rate ($\alpha$) | 0.00000001 |
 | L2 Regularization ($\lambda$) | 0.10 |
+| Activation Function | ReLU |
+| Action Space Function | Softmax |
 
 **Testing in progress. Will post results when available!**
 
