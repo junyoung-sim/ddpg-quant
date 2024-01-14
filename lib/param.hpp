@@ -6,9 +6,10 @@
 #define VITR 1000
 
 #define OBS 100
+#define INT 10
 
-#define ITR 50
-#define CAPACITY 20000
+#define ITR 100
+#define CAPACITY 10000
 #define BATCH 10
 
 #define EPS_INIT 0.50
