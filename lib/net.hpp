@@ -81,7 +81,7 @@ public:
     void load(std::string &path);
 };
 
-void copy(Net &src, Net &dst);
+void copy(Net &src, Net &dst, double tau);
 
 double relu(double x);
 double drelu(double x);

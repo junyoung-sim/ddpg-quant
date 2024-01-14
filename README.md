@@ -25,15 +25,15 @@ The following are some major characteristics of Deep Deterministic Policy Gradie
 
 ### DDPG in a nutshell
 
-The actor network, $\mu(s|\phi)=a$, observes a state from an environment to make a decision where the action space can be continuous. Since the actor must maximize reward, its parameters should be updated by minimizing the following objective function.
+The actor network, $\mu(s|\phi)=a$, observes a state from an environment to make a decision where the action space can be continuous. Since the actor must maximize reward, its parameters should be updated by maximizing the following objective function via gradient ascent.
 
-$$J=-\log{Q(s,a)}$$
+$$J_{\mu}=Q(s,a)$$
 
-What is $Q(s,a)$? It is the expected reward (q-value), predicted by the the critic network with parameters $\theta$, of performing the action space $a$ given state $s$. Thus, maximizing $Q(s,a)$ is equivalent to minimizing $J$ with respect to $\phi$ via gradient descent to optimize the actor. Simultaneously, we would like the critic network's $Q(s,a)$ to be a high-quality approximation of the true optimal q-value as shown in the Bellman equation below. Note that $r$ is the immediate reward observed after performing $a$ given $s$ and $Q'(s',a')$ is a prediction of future rewards, discounted by $\gamma$, that could be observed by performing $a'$ after state $s'$ that follows $s$.
+What is $Q(s,a)$? It is the expected reward (q-value), predicted by the the critic network with parameters $\theta$, of performing the action space $a$ given state $s$. As we maximize $J$, we would also like the critic network's $Q(s,a)$ to be a high-quality approximation of the true optimal q-value as shown in the Bellman equation below. Note that $r$ is the immediate reward observed after performing $a$ given $s$ and $Q'(s',a')$ is a prediction of future rewards, discounted by $\gamma$, that could be observed by performing $a'$ after state $s'$ that follows $s$.
 
 $$Q^{*}(s,a)=r+{\gamma}Q'(s',a'=\mu'(s'))$$
 
-For stable learning performance, $Q'$ is obtained from a delayed copy (aka target) of the critic network. Similarly, $a'$ is the action space returned by a delayed copy of the actor network given $s'$. Minimizing the following objective function with respect to $\theta$ would improve the critic network's q-value estimations.
+For stable learning performance, $Q'$ is obtained from a delayed copy (aka target) of the critic network. Similarly, $a'$ is the action space returned by a delayed copy of the actor network given $s'$. Minimizing the following objective function via gradient descentwith respect to $\theta$ would improve the critic network's q-value estimations.
 
 $$L=[Q^{*}(s,a)-Q(s,a)]^2$$
 
@@ -46,35 +46,7 @@ Optimizing $J$ and $L$ requires all the techniques used in standard deep Q-learn
 
 Suppose we have a portfolio with N distinct assets and would like to optimize the weights of each asset every market day (really any period) to maximize profit. DDPG is a suitable tool to tackle this problem with the following setup and learning hyperparameters:
 
-**Holdings**
-| Ticker | Name |
-|--------|------|
-| SHY | US 1-3 year Treasury             |
-| IEF | US 7-10 year Treasury            |
-| HYG | High-Yield Corporate (Junk)      |
-| LQD | Investment-Grade Corporate       |
-| MBB | Investment-Grade Mortgage-Backed |
-
-**Hyperparameters**
-| Parameter | Value |
-|-----------|-------|
-| Time Period | Mar 2007 - Jan 2024 |
-| V-Score Observation Period | 60-days |
-| V-Score Extrapolation Period | 20-days |
-| V-Score Simulation Epoch | 1000 |
-| Look-Back | 100-days (per asset) |
-| Iterations | 50 |
-| Replay Memory Capacity | 20000 |
-| Batch | 10 |
-| Initial Epsilon ($\epsilon_0$) | 0.50 |
-| Minimum Epsilon ($\epsilon_{min}$) | 0.10 (decay linearly per iteration) |
-| Discount Factor ($\gamma$) | 0.90 |
-| Learning Rate ($\alpha$) | 0.00000001 |
-| L2 Regularization ($\lambda$) | 0.10 |
-| Activation Function | ReLU |
-| Action Space Function | Softmax |
-
-**Testing in progress. Will post results when available!**
+**Implementation & testing in progress. Will post results when available!**
 
 ## References
 

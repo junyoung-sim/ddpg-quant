@@ -44,14 +44,13 @@ std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state, doubl
 void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
            std::vector<std::vector<double>> &valuation, Net &actor, Net &critic, std::default_random_engine &seed);
 
-void optimize_critic(Net &critic, std::vector<double> &state_action, std::vector<double> &agrad,
-                     std::vector<bool> &flag, double optimal, double q, double alpha, double lambda, unsigned int num_of_tickers);
+void optimize_critic(Net &critic, std::vector<double> &state_action, double optimal, double q,
+                     unsigned int num_of_tickers, std::vector<double> &agrad, std::vector<bool> &flag);
 
-void optimize_actor(Net &actor, std::vector<double> &state, std::vector<double> &action,
-                    std::vector<double> &agrad, std::vector<bool> &flag, double q, double alpha, double lambda);
+void optimize_actor(Net &actor, std::vector<double> &state,
+                    std::vector<double> &action, std::vector<double> &agrad, std::vector<bool> &flag);
 
-void optimize(Memory &memory, Net &critic, Net &target_critic,
-              Net &actor, Net &target_actor, double alpha, double lambda);
+void optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net &target_actor);
 
 
 #endif

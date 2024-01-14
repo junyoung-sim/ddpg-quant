@@ -26,8 +26,8 @@ std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state, doubl
 
 void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
            std::vector<std::vector<double>> &valuation, Net &actor, Net &critic, std::default_random_engine &seed) {
-    Net target_actor; copy(actor, target_actor);
-    Net target_critic; copy(critic, target_critic);
+    Net target_actor; copy(actor, target_actor, 1.00);
+    Net target_critic; copy(critic, target_critic, 1.00);
 
     const unsigned int START = OBS-1;
     const unsigned int TERMINAL = price[0].size()-2;
@@ -70,18 +70,18 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 index.erase(index.begin() + BATCH, index.end());
 
                 for(unsigned int &k: index)
-                    optimize(replay[k], critic, target_critic, actor, target_actor, ALPHA, LAMBDA);
+                    optimize(replay[k], critic, target_critic, actor, target_actor);
                 
-                std::vector<unsigned int>().swap(index);
+                copy(actor, target_actor, TAU);
+                copy(critic, target_critic, TAU);
 
                 replay.erase(replay.begin());
+
+                std::vector<unsigned int>().swap(index);
             }
         }
 
         out << total_return << "\n";
-
-        copy(actor, target_actor);
-        copy(critic, target_critic);
     }
 
     out.close();
@@ -89,15 +89,15 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     std::vector<Memory>().swap(replay);
 }
 
-void optimize_critic(Net &critic, std::vector<double> &state_action, std::vector<double> &agrad,
-                     std::vector<bool> &flag, double optimal, double q, double alpha, double lambda, unsigned int num_of_tickers) {
+void optimize_critic(Net &critic, std::vector<double> &state_action, double optimal, double q,
+                     unsigned int num_of_tickers, std::vector<double> &agrad, std::vector<bool> &flag) {
     for(int l = critic.num_of_layers() - 1; l >= 0; l--) {
         double part = 0.00, grad = 0.00;
         for(unsigned int n = 0; n < critic.layer(l)->out_features(); n++) {
             if(l == critic.num_of_layers() - 1) part = -2.00 * (optimal - q);
             else part = critic.layer(l)->node(n)->err() * drelu(critic.layer(l)->node(n)->sum());
 
-            double updated_bias = critic.layer(l)->node(n)->bias() - alpha * part;
+            double updated_bias = critic.layer(l)->node(n)->bias() - ALPHA * part;
             critic.layer(l)->node(n)->set_bias(updated_bias);
 
             for(unsigned int i = 0; i < critic.layer(l)->in_features(); i++) {
@@ -113,27 +113,27 @@ void optimize_critic(Net &critic, std::vector<double> &state_action, std::vector
                     critic.layer(l-1)->node(i)->add_err(part * critic.layer(l)->node(n)->weight(i));
                 }
 
-                grad += lambda * critic.layer(l)->node(n)->weight(i);
+                grad += LAMBDA * critic.layer(l)->node(n)->weight(i);
 
-                double updated_weight = critic.layer(l)->node(n)->weight(i) - alpha * grad;
+                double updated_weight = critic.layer(l)->node(n)->weight(i) - ALPHA * grad;
                 critic.layer(l)->node(n)->set_weight(i, updated_weight);
             }
         }
     }
 }
 
-void optimize_actor(Net &actor, std::vector<double> &state, std::vector<double> &action,
-                    std::vector<double> &agrad, std::vector<bool> &flag, double q, double alpha, double lambda) {
+void optimize_actor(Net &actor, std::vector<double> &state,
+                    std::vector<double> &action, std::vector<double> &agrad, std::vector<bool> &flag) {
     for(int l = actor.num_of_layers() - 1; l >= 0; l--) {
         double part = 0.00, grad = 0.00;
         for(unsigned int n = 0; n < actor.layer(l)->out_features(); n++) {
             if(l == actor.num_of_layers() - 1) {
                 while(!flag[n]);
-                part = -1.00 / q * agrad[n] * action[n] * (1.00 - action[n]);
+                part = agrad[n] * action[n] * (1.00 - action[n]);
             }
             else part = actor.layer(l)->node(n)->err() * drelu(actor.layer(l)->node(n)->sum());
 
-            double updated_bias = actor.layer(l)->node(n)->bias() - alpha * part;
+            double updated_bias = actor.layer(l)->node(n)->bias() - ALPHA * part;
             actor.layer(l)->node(n)->set_bias(updated_bias);
 
             for(unsigned int i = 0; i < actor.layer(l)->in_features(); i++) {
@@ -143,17 +143,16 @@ void optimize_actor(Net &actor, std::vector<double> &state, std::vector<double> 
                     actor.layer(l-1)->node(i)->add_err(part * actor.layer(l)->node(n)->weight(i));
                 }
 
-                grad += lambda * actor.layer(l)->node(n)->weight(i);
+                grad += LAMBDA * actor.layer(l)->node(n)->weight(i);
 
-                double updated_weight = actor.layer(l)->node(n)->weight(i) - alpha * grad;
+                double updated_weight = actor.layer(l)->node(n)->weight(i) + ALPHA * grad;
                 actor.layer(l)->node(n)->set_weight(i, updated_weight);
             }
         }
     }
 }
 
-void optimize(Memory &memory, Net &critic, Net &target_critic,
-              Net &actor, Net &target_actor, double alpha, double lambda) {
+void optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net &target_actor) {
     std::vector<double> *state = memory.state();
     std::vector<double> *action = memory.action();
 
@@ -175,10 +174,10 @@ void optimize(Memory &memory, Net &critic, Net &target_critic,
     std::vector<bool> flag(num_of_tickers, false);
 
     std::thread critic_optimizer(optimize_critic, std::ref(critic), std::ref(state_action),
-                                 std::ref(agrad), std::ref(flag), optimal, q[0], ALPHA, LAMBDA, num_of_tickers);
+                                 optimal, q[0], num_of_tickers, std::ref(agrad), std::ref(flag));
 
     std::thread actor_optimizer(optimize_actor, std::ref(actor), std::ref(*state),
-                                std::ref(*action), std::ref(agrad), std::ref(flag), q[0], ALPHA, LAMBDA);
+                                std::ref(*action), std::ref(agrad), std::ref(flag));
 
     critic_optimizer.join();
     actor_optimizer.join();
