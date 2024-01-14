@@ -11,11 +11,8 @@
 
 std::vector<double> sample_state(std::vector<std::vector<double>> &env, unsigned int t) {
     std::vector<double> state;
-    for(unsigned int i = 0; i < env.size(); i++) {
-        std::vector<double> dat = {env[i].begin() + t+1-OBS, env[i].begin() + t+1};
-        state.insert(state.end(), dat.begin(), dat.end());
-        std::vector<double>().swap(dat);
-    }
+    for(unsigned int i = 0; i < env.size(); i++)
+        state.insert(state.end(), env[i].begin() + t+1-OBS, env[i].begin() + t+1);
     return state;
 }
 
@@ -65,7 +62,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             replay.push_back(Memory(state, action, next_state, reward));
 
             if(replay.size() == CAPACITY) {
-                std::vector<unsigned int> index(replay.size(), 0);
+                std::vector<unsigned int> index(CAPACITY, 0);
                 std::iota(index.begin(), index.end(), 0);
                 std::shuffle(index.begin(), index.end(), seed);
                 index.erase(index.begin() + BATCH, index.end());
