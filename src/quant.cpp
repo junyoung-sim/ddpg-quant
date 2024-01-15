@@ -11,10 +11,8 @@
 
 std::vector<double> sample_state(std::vector<std::vector<double>> &env, unsigned int t) {
     std::vector<double> state;
-    for(std::vector<double> &dat: env) {
-        for(int i = t-OBS+INT; i <= t; i += INT)
-            state.push_back(dat[i]);
-    }
+    for(unsigned int i = 0; i < env.size(); i++)
+        state.insert(state.end(), env[i].begin() + t+1-OBS, env[i].begin() + t+1);
     return state;
 }
 
@@ -31,6 +29,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
 
     const unsigned int START = OBS-1;
     const unsigned int TERMINAL = price[0].size()-2;
+    unsigned int frames = 0;
 
     std::vector<Memory> replay;
 
@@ -39,8 +38,8 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
 
     for(unsigned int itr = 1; itr <= ITR; itr++) {
         double total_return = 1.00;
-        double eps = (EPS_MIN - EPS_INIT) / (ITR-1) * (itr-1) + EPS_INIT;
         for(unsigned int t = START; t <= TERMINAL; t++) {
+            double eps = std::max(EPS_MIN, EPS_INIT + (EPS_MIN - EPS_INIT) / CAPACITY * frames++);
             std::vector<double> state = sample_state(valuation, t);
             std::vector<double> action = epsilon_greedy(actor, state, eps);
 
@@ -85,6 +84,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     }
 
     out.close();
+    std::system("./python/build.py");
 
     std::vector<Memory>().swap(replay);
 }
@@ -169,7 +169,7 @@ void optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net &
     std::vector<double> future = target_critic.forward(next_state_action, false);
     double optimal = memory.reward() + GAMMA * future[0];
 
-    unsigned int num_of_tickers = state->size() / (OBS/INT);
+    unsigned int num_of_tickers = state->size() / OBS;
     std::vector<double> agrad(num_of_tickers, 0.00);
     std::vector<bool> flag(num_of_tickers, false);
 

@@ -25,7 +25,7 @@ The following are some major characteristics of Deep Deterministic Policy Gradie
 
 ### DDPG in a nutshell
 
-The actor network, $\mu(s|\phi)=a$, observes a state from an environment to make a decision where the action space can be continuous. Since the actor must maximize reward, its parameters should be updated by maximizing the following objective function via gradient ascent.
+The actor network, $\mu(s|\phi)=a$, observes a state from an environment to make a decision where the action space can be continuous. Since the actor must maximize reward, its parameters should be updated by maximizing the following objective function via gradient ascent with respect to $\phi$.
 
 $$J_{\mu}=Q(s,a)$$
 
@@ -33,7 +33,7 @@ What is $Q(s,a)$? It is the expected reward (q-value), predicted by the the crit
 
 $$Q^{*}(s,a)=r+{\gamma}Q'(s',a'=\mu'(s'))$$
 
-For stable learning performance, $Q'$ is obtained from a delayed copy (aka target) of the critic network. Similarly, $a'$ is the action space returned by a delayed copy of the actor network given $s'$. Minimizing the following objective function via gradient descentwith respect to $\theta$ would improve the critic network's q-value estimations.
+For stable learning performance, $Q'$ is obtained from a delayed copy (aka target) of the critic network. Similarly, $a'$ is the action space returned by a delayed copy of the actor network given $s'$. Minimizing the following objective function via gradient descent with respect to $\theta$ would improve the critic network's q-value estimations.
 
 $$L=[Q^{*}(s,a)-Q(s,a)]^2$$
 
@@ -41,6 +41,7 @@ Optimizing $J$ and $L$ requires all the techniques used in standard deep Q-learn
 
 1) We must compute $\frac{dQ}{dA}$ for each action (action gradients) while updating the critic parameters such that we can compute $\frac{dJ}{d\phi}=\frac{dJ}{dQ}\frac{dQ}{dA}\frac{dA}{d\phi}$ for the actor (parallelized via CPU multithreading in this algorithm).
 2) We must implement parameter noise, which adds gaussian noise to the actor's parameters to enable exploration while learning. Adding noise to the parameters is proven to be more efficient than adding noise to the action space.
+3) Soft updates. Instead of copying the actor and critic parameters to their targets after a fixed number of frames, DDPG uses soft updates where only a small percentage ($\tau$) of the actor and critic parameters are copied to their targets every iteration.
 
 ## Portfolio Optimization
 

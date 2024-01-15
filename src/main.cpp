@@ -47,21 +47,17 @@ int main(int argc, char *argv[])
     for(std::thread &th: threads) th.join();
     for(std::vector<double> &p: price) p.erase(p.begin(), p.begin() + VOBS-1);
 
-    actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
-    actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
-    actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
-    actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
-    actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
-    actor.add_layer(tickers.size() * OBS/INT, tickers.size()); actor.use_softmax();
+    actor.add_layer(tickers.size() * OBS, tickers.size() * OBS);
+    actor.add_layer(tickers.size() * OBS, tickers.size() * OBS);
+    actor.add_layer(tickers.size() * OBS, tickers.size() * OBS);
+    actor.add_layer(tickers.size() * OBS, tickers.size()); actor.use_softmax();
     actor.init(seed);
     actor.load(actor_path);
 
-    critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));
-    critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));
-    critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));
-    critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));
-    critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));
-    critic.add_layer(tickers.size() * (OBS/INT+1), 1);
+    critic.add_layer(tickers.size() * (OBS+1), tickers.size() * (OBS+1));
+    critic.add_layer(tickers.size() * (OBS+1), tickers.size() * (OBS+1));
+    critic.add_layer(tickers.size() * (OBS+1), tickers.size() * (OBS+1));
+    critic.add_layer(tickers.size() * (OBS+1), 1);
     critic.init(seed);
     critic.load(critic_path);
 
