@@ -34,10 +34,12 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     std::vector<Memory> replay;
 
     std::ofstream out("./res/build");
-    out << "total_return\n";
+    out << "total_return,actor_loss\n";
 
     for(unsigned int itr = 1; itr <= ITR; itr++) {
         double total_return = 1.00;
+        double actor_loss_sum = 0.00;
+        unsigned int update_count = 0;
         for(unsigned int t = START; t <= TERMINAL; t++) {
             double eps = std::max(EPS_MIN, EPS_INIT + (EPS_MIN - EPS_INIT) / CAPACITY * frames++);
             std::vector<double> state = sample_state(valuation, t);
@@ -58,7 +60,8 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 std::cout << tickers[i] << ":" << action[i];
                 if(i != tickers.size() - 1) std::cout << ", ";
             }
-            std::cout << "] R=" << reward << " TR=" << total_return << "\n";
+            std::cout << "] R=" << reward << " TR=" << total_return;
+            std::cout << " L=" << actor_loss_sum / update_count << "\n";
 
             replay.push_back(Memory(state, action, next_state, reward));
 
@@ -69,7 +72,8 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 index.erase(index.begin() + BATCH, index.end());
 
                 for(unsigned int &k: index)
-                    optimize(replay[k], critic, target_critic, actor, target_actor);
+                    actor_loss_sum += optimize(replay[k], critic, target_critic, actor, target_actor);
+                update_count += BATCH;
                 
                 copy(actor, target_actor, TAU);
                 copy(critic, target_critic, TAU);
@@ -80,7 +84,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             }
         }
 
-        out << total_return << "\n";
+        out << total_return << "," << actor_loss_sum / update_count << "\n";
     }
 
     out.close();
@@ -152,7 +156,7 @@ void optimize_actor(Net &actor, std::vector<double> &state,
     }
 }
 
-void optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net &target_actor) {
+double optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net &target_actor) {
     std::vector<double> *state = memory.state();
     std::vector<double> *action = memory.action();
 
@@ -161,6 +165,7 @@ void optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net &
     state_action.insert(state_action.end(), state->begin(), state->end());
 
     std::vector<double> q = critic.forward(state_action, false);
+    double actor_loss = q[0];
 
     std::vector<double> *next_state = memory.next_state();
     std::vector<double> next_state_action = target_actor.forward(*next_state, false);
@@ -188,4 +193,6 @@ void optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net &
     std::vector<double>().swap(future);
     std::vector<double>().swap(agrad);
     std::vector<bool>().swap(flag);
+
+    return actor_loss;
 }

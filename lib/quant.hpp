@@ -50,7 +50,7 @@ void optimize_critic(Net &critic, std::vector<double> &state_action, double opti
 void optimize_actor(Net &actor, std::vector<double> &state,
                     std::vector<double> &action, std::vector<double> &agrad, std::vector<bool> &flag);
 
-void optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net &target_actor);
+double optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net &target_actor);
 
 
 #endif
