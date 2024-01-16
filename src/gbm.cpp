@@ -20,13 +20,6 @@ double stdev(std::vector<double> &dat) {
     return sqrt(rss / dat.size());
 }
 
-void standardize(std::vector<double> &dat) {
-    double mu = mean(dat);
-    double sigma = stdev(dat);
-    for(double &x: dat)
-        x = (x - mu) / sigma;
-}
-
 void normal(std::vector<std::vector<double>> &dat, std::default_random_engine &seed) {
     std::normal_distribution<double> std_normal(0.0, 1.0);
     for(int i = 0; i < dat.size(); i++)
@@ -70,6 +63,4 @@ void vscore(std::vector<double> &raw, std::vector<double> &v,
         }
         v.push_back((double)sum / (itr * ext));
     }
-    
-    standardize(v);
 }
