@@ -6,6 +6,7 @@
 #define VITR 1000
 
 #define OBS 100
+#define INT 10
 
 #define ITR 100
 #define CAPACITY 50000

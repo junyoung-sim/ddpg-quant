@@ -11,8 +11,10 @@
 
 std::vector<double> sample_state(std::vector<std::vector<double>> &env, unsigned int t) {
     std::vector<double> state;
-    for(unsigned int i = 0; i < env.size(); i++)
-        state.insert(state.end(), env[i].begin() + t+1-OBS, env[i].begin() + t+1);
+    for(std::vector<double> &dat: env) {
+        for(unsigned int i = t-OBS+INT; i <= t; i += INT)
+            state.push_back(dat[i]);
+    }
     return state;
 }
 
@@ -174,7 +176,7 @@ double optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net
     std::vector<double> future = target_critic.forward(next_state_action, false);
     double optimal = memory.reward() + GAMMA * future[0];
 
-    unsigned int num_of_tickers = state->size() / OBS;
+    unsigned int num_of_tickers = state->size() / (OBS/INT);
     std::vector<double> agrad(num_of_tickers, 0.00);
     std::vector<bool> flag(num_of_tickers, false);
 
