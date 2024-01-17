@@ -39,7 +39,7 @@ $$L=[Q^{*}(s,a)-Q(s,a)]^2$$
 
 Optimizing $J$ and $L$ requires all the techniques used in standard deep Q-learning (e.g., replay memory) with some modifications:
 
-1) We must compute $\frac{dQ}{dA}$ for each action (action gradients) while updating the critic parameters such that we can compute $$\nabla{J_\phi}=\nabla_{a}Q(s,a;\theta)\nabla_{\phi}\mu(s)$$ for the actor (parallelized via CPU multithreading in this algorithm).
+1) We must compute $\frac{dQ}{dA}$ for each action (action gradients) while updating the critic parameters such that we can compute $\nabla{J_\phi}=\nabla_{a}Q(s,a;\theta)\nabla_{\phi}\mu(s)$ for the actor (parallelized via CPU multithreading in this algorithm).
 2) We must implement parameter noise, which adds gaussian noise to the actor's parameters to enable exploration while learning. Adding noise to the parameters is proven to be more efficient than adding noise to the action space.
 3) Soft updates. Instead of copying the actor and critic parameters to their targets after a fixed number of frames, DDPG uses soft updates where only a small percentage ($\tau$) of the actor and critic parameters are copied to their targets every iteration.
 
@@ -55,7 +55,7 @@ For each asset, compute its **valuation series** during the past 100-days (look-
 
 Maximizing daily returns is the intuitive reward system. However, after some testing, the algorithm always converged to holding all of its portfolio in one asset with the highest return. This is not only uninteresting but also does that reduce the return-over-risk ratio. Thus, it seems more suitable to optimize the model such that it maximizes Sharpe ratio.
 
-Let $$y_t=\frac{p_t-p_{t-1}}{p_{t-1}}$$ be the portfolio's daily returns. The volatility of its daily return would be $$\sigma_t^2=\frac{1}{t}\sum_{i=1}^{t}(y_t - \bar{y})^2$$. Assuming that the portfolio's mean daily return is near zero and given only one observation, we can simply the volatility to $$\sigma_t^2=y_t^2$$.
+Let $y_t=\frac{p_t-p_{t-1}}{p_{t-1}}$ be the portfolio's daily returns. The volatility of its daily return would be $\sigma_t^2=\frac{1}{t}\sum_{i=1}^{t}(y_t - \bar{y})^2$. Assuming that the portfolio's mean daily return is near zero and given only one observation, we can simply the volatility to $\sigma_t^2=y_t^2$.
 
 Sharpe Ratio is calculated as the difference between the portfolio's excess return and risk-free return divided by the standard deviation of returns. In this algorithm, let the risk-free return ($$r_f$$) be 0.10% per day (this amounts to 22% per year). Thus, the models' Sharpe Ratio can be defined as follows.
 
