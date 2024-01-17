@@ -57,7 +57,7 @@ Maximizing daily returns is the intuitive reward system. However, after some tes
 
 Let $y_t=\frac{p_t-p_{t-1}}{p_{t-1}}$ be the portfolio's daily returns. The volatility of its daily return would be $$\sigma_t^2=\frac{1}{t} \sum_{i=1}^{t} (y_t - \bar{y})^2$$. Assuming that the portfolio's mean daily return is near zero and given only one observation, we can simply the volatility to $\sigma_t^2=y_t^2$.
 
-Sharpe Ratio is calculated as the difference between the portfolio's excess return and risk-free return divided by the standard deviation of returns. In this algorithm, let the risk-free return ($$r_f$$) be 0.10% per day (this amounts to 22% per year). Thus, the models' Sharpe Ratio can be defined as follows.
+Sharpe Ratio is calculated as the difference between the portfolio's excess return and risk-free return divided by the standard deviation of returns. In this algorithm, let the risk-free return ($r_f$) or the objective daily return be 0.10% per day (this amounts to 22% per year). Thus, the models' Sharpe Ratio can be defined as follows.
 
 $$SR=\frac{y_t-r_f}{\sigma_t^2}=\frac{y_t-r_f}{y_t^2}$$
 
