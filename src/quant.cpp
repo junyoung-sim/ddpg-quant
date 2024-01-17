@@ -47,13 +47,17 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             std::vector<double> state = sample_state(valuation, t);
             std::vector<double> action = epsilon_greedy(actor, state, eps);
 
-            double reward = 0.00;
+            double portfolio_return = 0.00, portfolio_risk = 0.00, sharpe = 0.00;
             for(unsigned int i = 0; i < tickers.size(); i++) {
                 double dp = (price[i][t+1] - price[i][t]) / price[i][t];
-                reward += action[i] * (1.00 + dp);
+                portfolio_return += action[i] * (1.00 + dp);
+
+                std::vector<double> tmp = {price[i].begin(), price[i].begin() + t+1};
+                std::vector<double> r = returns(tmp);
+                portfolio_risk += action[i] * pow(stdev(r), 2);
             }
-            reward = (reward - 1.00) * 100;
-            total_return *= 1.00 + reward / 100;
+            total_return *= portfolio_return;
+            sharpe = std::max(0.00, (portfolio_return - 1.00) / sqrt(portfolio_risk));
 
             std::vector<double> next_state = sample_state(valuation, t+1);
 
@@ -62,10 +66,10 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 std::cout << tickers[i] << ":" << action[i];
                 if(i != tickers.size() - 1) std::cout << ", ";
             }
-            std::cout << "] R=" << reward << " TR=" << total_return;
+            std::cout << "] TR=" << total_return << " SR=" << sharpe;
             std::cout << " L=" << actor_loss_sum / update_count << "\n";
 
-            replay.push_back(Memory(state, action, next_state, reward));
+            replay.push_back(Memory(state, action, next_state, sharpe));
 
             if(replay.size() == CAPACITY) {
                 std::vector<unsigned int> index(CAPACITY, 0);
