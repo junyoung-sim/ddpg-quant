@@ -49,11 +49,9 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
 
             double portfolio_return = 0.00, portfolio_risk = 0.00, sharpe = 0.00;
             for(unsigned int i = 0; i < tickers.size(); i++) {
-                double dp = (price[i][t+1] - price[i][t]) / price[i][t];
-                portfolio_return += action[i] * (1.00 + dp);
-
-                std::vector<double> tmp = {price[i].begin(), price[i].begin() + t+1};
+                std::vector<double> tmp = {price[i].begin() + t+1-OBS, price[i].begin() + t+2};
                 std::vector<double> r = returns(tmp);
+                portfolio_return += action[i] * (1.00 + r.back());
                 portfolio_risk += action[i] * pow(stdev(r), 2);
             }
             total_return *= portfolio_return;
