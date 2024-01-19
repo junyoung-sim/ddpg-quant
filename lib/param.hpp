@@ -16,7 +16,7 @@
 #define EPS_MIN 0.25
 #define GAMMA 0.99
 #define TAU 0.001
-#define ALPHA 0.00001
+#define ALPHA 0.000001
 #define LAMBDA 0.10
 
 #endif

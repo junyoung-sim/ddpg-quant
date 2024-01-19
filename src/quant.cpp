@@ -55,7 +55,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 portfolio_risk += action[i] * pow(stdev(r), 2);
             }
             total_return *= portfolio_return;
-            sharpe = std::max(0.00, (portfolio_return - 1.00) / sqrt(portfolio_risk));
+            sharpe = (portfolio_return - 1.00) / sqrt(portfolio_risk);
 
             std::vector<double> next_state = sample_state(valuation, t+1);
 

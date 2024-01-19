@@ -54,7 +54,7 @@ std::vector<double> Net::forward(std::vector<double> &x, bool noise) {
         for(unsigned int n = 0; n < layers[l].out_features(); n++) {
             double dot = 0.00;
             for(unsigned int i = 0; i < layers[l].in_features(); i++) {
-                double weight = layers[l].node(n)->weight(i) * (noise ? gaussian(*seed) : 1.00);
+                double weight = layers[l].node(n)->weight(i) + (noise ? 0.10 * gaussian(*seed) : 0.00);
                 dot += (l == 0 ? x[i] : layers[l-1].node(i)->act()) * weight;
             }
 
