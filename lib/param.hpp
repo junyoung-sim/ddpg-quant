@@ -9,7 +9,7 @@
 #define INT 10
 
 #define ITR 100
-#define CAPACITY 50000
+#define CAPACITY 100000
 #define BATCH 10
 
 #define EPS_INIT 1.00
