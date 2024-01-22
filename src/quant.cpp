@@ -58,7 +58,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             total_return *= portfolio_return;
             sharpe = (portfolio_return - 1.00) / sqrt(portfolio_risk);
             diversity = entropy(action);
-            reward = std::max(0.00, sharpe * diversity);
+            reward = sharpe * (sharpe > 0.00 ? diversity : 1.00);
 
             std::vector<double> next_state = sample_state(valuation, t+1);
 
