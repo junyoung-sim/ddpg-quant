@@ -64,3 +64,12 @@ void vscore(std::vector<double> &raw, std::vector<double> &v,
         v.push_back((double)sum / (itr * ext));
     }
 }
+
+double entropy(std::vector<double> &prob) {
+    double h = 0.00;
+    for(double &p: prob) {
+        if(p != 0.00)
+            h += -log(p) * p;
+    }
+    return h;
+}

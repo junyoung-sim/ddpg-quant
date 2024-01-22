@@ -53,9 +53,9 @@ For each asset, compute its **valuation series** during the past 100-days (look-
 
 ### Reward
 
-Maximizing daily returns is the intuitive reward system. However, after some testing, the algorithm always converged to holding all of its portfolio in one asset with the highest return. This is not only uninteresting but also does that reduce the return-over-risk ratio. Thus, it seems more suitable to optimize the model such that it maximizes Sharpe ratio.
+Maximizing daily returns is the intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe) and portfolio diversification (action space entropy) as shown below.
 
-**Implementation & testing in progress. Will post results when available!**
+**Implementation & testing in progress. Will post full documentation and results when available!**
 
 ## References
 
