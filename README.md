@@ -64,7 +64,7 @@ $$R = \begin{dcases}
         S & S \leq 0 \\ 
       \end{dcases}$$
 
-Note that $a_i$, $p_i$, and $\sigma_i$ is the weight, daily price change, and variance in daily returns of each asset (100-day look-back). Overall, this reward function is maximized when there is a positive Sharpe ratio and high diversity in the portfolio weights. A positive Sharpe ratio with low diversity in the portfolio weights would heavily discount the reward in order to prevent learning a suboptimal policy that holds only one asset.
+Note that $a_i$, $p_i$, and $\sigma_i$ is the weight, daily price change, and variance in daily returns of each asset (100-day look-back), respectively. Overall, this reward function is maximized when there is a positive Sharpe ratio and high diversity in the portfolio weights. A positive Sharpe ratio with low diversity in the portfolio weights would heavily discount the reward in order to prevent learning a suboptimal policy that holds only one asset.
 
 **Implementation & testing in progress. Will post full documentation and results when available!**
 
