@@ -59,7 +59,10 @@ $$S=\frac{\sum a_i\Delta{p_i}}{\sqrt{\sum a_i\sigma_{i}^2}}$$
 
 $$E=-\sum a_i \log{a_i}$$
 
-$$R = \begin{dcases} S \cdot E & S > 0 \\ S & S \leq 0 \\ \end{dcases}$$
+$$R = \begin{dcases}
+        S \cdot E & S > 0 \\
+        S & S \leq 0 \\ 
+      \end{dcases}$$
 
 **Implementation & testing in progress. Will post full documentation and results when available!**
 
