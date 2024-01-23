@@ -55,7 +55,7 @@ For each asset, compute the **valuation series** of its entire historical period
 
 Maximizing daily returns is the intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe) and portfolio diversification (action space entropy) as shown below.
 
-$$r=\frac{\sum_{i}^{N}a_i\delta{p_i}}{\sum_{i}^{N}a_i\sigma_{i}^2}$$
+$$r=\frac{\sum_{i}^{N} a_i\Delta{p_i}}{\sum_{i}^{N} a_i\sigma_{i}^2}$$
 
 **Implementation & testing in progress. Will post full documentation and results when available!**
 
