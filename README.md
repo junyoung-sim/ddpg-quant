@@ -49,11 +49,13 @@ Suppose we have a portfolio with N distinct assets and would like to optimize th
 
 ### State
 
-For each asset, compute its **valuation series** during the past 100-days (look-back). Subsequently, sample 10 values with equal intervals from the valuation series where the most recent valuation score must be included.
+For each asset, compute the **valuation series** of its entire historical period with an observation period of 60-days and extrapolation period of 20-days. At any given time, the state of each asset is its valuation series during the past 100-days (look-back). Sample 10 values with equal intervals from the valuation series where the most recent valuation score must be included. This sufficiently captures each asset's valuation trend with reduced noise and dimensions.
 
 ### Reward
 
 Maximizing daily returns is the intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe) and portfolio diversification (action space entropy) as shown below.
+
+$$r=\frac{\sum_{i}^{N}a_i\delta{p_i}}{\sum_{i}^{N}a_i\sigma_{i}^2}$$
 
 **Implementation & testing in progress. Will post full documentation and results when available!**
 

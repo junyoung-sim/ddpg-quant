@@ -49,7 +49,7 @@ Layer *Net::back() { return &layers.back(); }
 
 std::vector<double> Net::forward(std::vector<double> &x, bool noise) {
     std::vector<double> yhat; double expsum = 0.00;
-    std::normal_distribution<double> gaussian(0.00, 0.15);
+    std::normal_distribution<double> gaussian(0.00, 0.10);
     for(unsigned int l = 0; l < layers.size(); l++) {
         for(unsigned int n = 0; n < layers[l].out_features(); n++) {
             double dot = 0.00;
@@ -57,9 +57,10 @@ std::vector<double> Net::forward(std::vector<double> &x, bool noise) {
                 double weight = layers[l].node(n)->weight(i) + (noise ? gaussian(*seed) : 0.00);
                 dot += (l == 0 ? x[i] : layers[l-1].node(i)->act()) * weight;
             }
+            dot += layers[l].node(n)->bias() + (noise ? gaussian(*seed) : 0.00);
 
             layers[l].node(n)->init();
-            layers[l].node(n)->set_sum(dot + layers[l].node(n)->bias());
+            layers[l].node(n)->set_sum(dot);
 
             if(l == layers.size() - 1) {
                 if(softmax) expsum += exp(layers[l].node(n)->sum());
