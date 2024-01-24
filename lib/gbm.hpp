@@ -17,6 +17,4 @@ std::vector<double> returns(std::vector<double> &raw);
 void vscore(std::vector<double> &raw, std::vector<double> &v,
             unsigned int obs, unsigned int ext, unsigned int itr, std::default_random_engine &seed);
 
-double entropy(std::vector<double> &prob);
-
 #endif
