@@ -61,6 +61,8 @@ The model outputs the portfolio's weights via a softmax layer that will be used 
 
 ### DDPG
 
+**WORK IN PROGRESS!**
+
 | Hyperparameters | Value |
 |-----------------|-------|
 | Iterations | 200 |
