@@ -59,11 +59,13 @@ std::vector<double> Net::forward(std::vector<double> &x, bool noise) {
             }
             dot += layers[l].node(n)->bias();
 
+            if(l == layers.size() - 1 && noise) dot += gaussian(*seed);
+
             layers[l].node(n)->init();
             layers[l].node(n)->set_sum(dot);
 
             if(l == layers.size() - 1) {
-                if(softmax) expsum += exp(layers[l].node(n)->sum() + (noise ? gaussian(*seed) : 0.00));
+                if(softmax) expsum += exp(layers[l].node(n)->sum());
                 else yhat.push_back(layers[l].node(n)->sum());
                 continue;
             }

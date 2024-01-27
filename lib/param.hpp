@@ -17,6 +17,6 @@
 #define GAMMA 0.99
 #define TAU 0.01
 #define ALPHA 0.000001
-#define LAMBDA 0.10
+#define LAMBDA 0.01
 
 #endif

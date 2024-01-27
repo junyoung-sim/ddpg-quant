@@ -53,18 +53,7 @@ For each asset, compute the **valuation series** of its entire historical period
 
 ### Reward
 
-Maximizing daily returns is the intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe; denoted as $S$) and portfolio diversification (action space entropy; denoted as $E$) as shown below.
-
-$$S=\frac{\sum a_i\Delta{p_i}}{\sqrt{\sum a_i\sigma_{i}^2}}$$
-
-$$E=-\sum a_i \log{a_i}$$
-
-$$R = \begin{dcases}
-        S \cdot E & S > 0 \\
-        S & S \leq 0 \\ 
-      \end{dcases}$$
-
-Note that $a_i$, $\Delta{p_i}$, and $\sigma_i$ is the weight, daily price change, and variance in daily returns of each asset (100-day look-back), respectively. Overall, this reward function is maximized when there is a positive Sharpe ratio and high diversity in the portfolio weights. A positive Sharpe ratio with low diversity in the portfolio weights would heavily discount the reward in order to prevent learning a suboptimal policy that holds only one asset.
+Maximizing daily returns is the intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe).
 
 **Implementation & testing in progress. Will post full documentation and results when available!**
 
