@@ -36,10 +36,11 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     std::vector<Memory> replay;
 
     std::ofstream out("./res/build");
-    out << "total_return,actor_loss\n";
+    out << "return,sharpe,loss\n";
 
     for(unsigned int itr = 1; itr <= ITR; itr++) {
         double total_return = 1.00;
+        double sharpe_sum = 0.00;
         double actor_loss_sum = 0.00;
         unsigned int update_count = 0;
         for(unsigned int t = START; t <= TERMINAL; t++) {
@@ -57,6 +58,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             }
             total_return *= portfolio_return.back();
             sharpe = (portfolio_return.back() - 1.00) / stdev(portfolio_return);
+            sharpe_sum += sharpe;
 
             std::vector<double> next_state = sample_state(valuation, t+1);
 
@@ -69,6 +71,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             std::cout << " L=" << actor_loss_sum / update_count << "\n";
 
             replay.push_back(Memory(state, action, next_state, sharpe));
+            std::vector<double>().swap(portfolio_return);
 
             if(replay.size() == CAPACITY) {
                 std::vector<unsigned int> index(CAPACITY, 0);
@@ -89,11 +92,12 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             }
         }
 
-        out << total_return << "," << actor_loss_sum / update_count << "\n";
+        out << total_return << ",";
+        out << sharpe_sum / (TERMINAL-START+1) << ",";
+        out << actor_loss_sum / update_count << "\n";
     }
 
     out.close();
-    std::system("./python/build.py");
 
     std::vector<Memory>().swap(replay);
 }
