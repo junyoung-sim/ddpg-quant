@@ -40,7 +40,7 @@ $$L=[Q^{*}(s,a)-Q(s,a)]^2$$
 Optimizing $J$ and $L$ requires all the techniques used in standard deep Q-learning (e.g., replay memory) with some modifications:
 
 1) We must compute $\frac{dQ}{dA}$ for each action (action gradients) while updating the critic parameters such that we can compute $\nabla{J_\phi}=\nabla_{a}Q(s,a;\theta)\nabla_{\phi}\mu(s)$ for the actor (parallelized via CPU multithreading in this algorithm).
-2) We must implement parameter noise, which adds gaussian noise to the actor's parameters to enable exploration while learning. Adding noise to the parameters is proven to be more efficient than adding noise to the action space.
+2) Exploration should either be done by adding OU or uncorrelated gaussian noise to the parameters or action space.
 3) Soft updates. Instead of copying the actor and critic parameters to their targets after a fixed number of frames, DDPG uses soft updates where only a small percentage ($\tau$) of the actor and critic parameters are copied to their targets every iteration.
 
 ## Portfolio Optimization
@@ -49,13 +49,33 @@ Suppose we have a portfolio with N distinct assets and would like to optimize th
 
 ### State
 
-For each asset, compute the **valuation series** of its entire historical period with an observation period of 60-days and extrapolation period of 20-days. At any given time, the state of each asset is its valuation series during the past 100-days (look-back). Sample 10 values with equal intervals from the valuation series where the most recent valuation score must be included. This sufficiently captures each asset's valuation trend with reduced noise and dimensions.
+For each asset, compute the **valuation series** of its entire historical period with an observation period of 60-days and extrapolation period of 20-days. At any given time, the state of each asset is its valuation series during the past 100-days (look-back). Sample values from the valuation series every 5-days where the most recent valuation score must be included. This sufficiently captures each asset's valuation trend with reduced noise and dimensions.
 
 ### Reward
 
-Maximizing daily returns is the intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe).
+Maximizing daily returns is an intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe). The Sharpe ratio for this model is calculated by the ratio of the portfolio's daily return to the standard deviation in daily returns of the portfolio if the model's portfolio weights were held constant during the past 100-days (look-back).
 
-**Implementation & testing in progress. Will post full documentation and results when available!**
+### Action
+
+The model outputs the portfolio's weights via a softmax layer that will be used for the next market day.
+
+### DDPG
+
+| Hyperparameters | Value |
+|-----------------|-------|
+| Iterations | 200 |
+| Replay Memory Capacity | 100000 |
+| Batch Size | 10 |
+| Initial Exploration Rate | 1.00 |
+| Minimum Exploration Rate | 0.10 |
+| $\gamma$ | 0.90 |
+| $\tau$ | 0.01 |
+| $\alpha$ | 0.000001 |
+| $\lambda$ | 0.01 |
+
+Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's total return, average daily Sharpe ratio, and actor loss.
+
+![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/build.png)
 
 ## References
 

@@ -7,10 +7,16 @@ log = pd.read_csv("./res/build")
 
 plt.figure(figsize=(10,5))
 
-plt.subplot(2, 1, 1)
-plt.plot(log["total_return"])
+plt.subplot(3, 1, 1)
+plt.plot(log["return"], label="return")
+plt.legend()
 
-plt.subplot(2, 1, 2)
-plt.plot(log["actor_loss"])
+plt.subplot(3, 1, 2)
+plt.plot(log["sharpe"], label="sharpe")
+plt.legend()
+
+plt.subplot(3, 1, 3)
+plt.plot(log["loss"], label="loss")
+plt.legend()
 
 plt.savefig("./res/build.png")
