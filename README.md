@@ -74,6 +74,10 @@ SPY (S&P 500), IEF (10-yr US Treasury), EUR=X (Euro-USD), GLD (Gold)
 | $\tau$ | 0.01 |
 | $\alpha$ | 0.000001 |
 | $\lambda$ | 0.01 |
+| Hidden Layer Activation | ReLU |
+| Actor Output Layer | Softmax |
+| Actor Shape | (80, 80, 80, 8) |
+| Critic Shape | (88, 88, 88, 1) |
 
 Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's total return, average daily Sharpe ratio, and actor loss.
 
