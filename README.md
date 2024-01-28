@@ -61,15 +61,15 @@ The model outputs the portfolio's weights via a softmax layer that will be used 
 
 ### DDPG
 
-**WORK IN PROGRESS!**
+SPY (S&P 500), IEF (10-yr US Treasury), EUR=X (Euro-USD), GLD (Gold)
 
 | Hyperparameters | Value |
 |-----------------|-------|
-| Iterations | 200 |
+| Iterations | 100 |
 | Replay Memory Capacity | 100000 |
 | Batch Size | 10 |
 | Initial Exploration Rate | 1.00 |
-| Minimum Exploration Rate | 0.10 |
+| Minimum Exploration Rate | 0.25 |
 | $\gamma$ | 0.90 |
 | $\tau$ | 0.01 |
 | $\alpha$ | 0.000001 |
