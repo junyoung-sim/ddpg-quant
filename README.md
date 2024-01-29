@@ -1,6 +1,11 @@
 # Deep Deterministic Policy Gradient and Geometric Brownian Motion for Portfolio Optimization
 
-This algorithm utilizes Geometric Brownian Motion to predict asset valuation cycles fed into a Deep Deterministic Policy Gradient model that maximizes the return of any given portfolio. (WORK IN PROGRESS!!!)
+This algorithm utilizes Geometric Brownian Motion to predict asset valuation cycles fed into a Deep Deterministic Policy Gradient model that maximizes the Sharpe ratio of any given portfolio.
+
+### Motivation
+
+1) My previous trading models based on DQNs have a discrete action space advising which trading action to take for a certain stock. The time has come to learn about continuous action spaces to optimizing portfolio weightings, which is more often a useful and challenging task.
+2) My previous trading models are made profitable through occasional short selling. However, I have come to realize that short selling has bad taste, both practically and morally. That said, I decide to shift my focus on a better problem: asset and wealth management through portfolio optimization. 
 
 ## Geometric Brownian Motion for Estimating Asset Valuation Cycles
 
