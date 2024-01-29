@@ -88,10 +88,6 @@ Traverse the entire historical period for each iteration. Decrease exploration r
 
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/build.png)
 
-The model reaches its memory capacity around its 20th iteration and begins updating its parameters. From that point forward, both total return and average daily Sharpe ratio very steadily increased through training, albeit a minimum exploration rate of 0.25 is certainly causing some noise in training performance. Here's the model's full test performance with an exploration rate of 0.00.
-
-
-
 ## References
 
 Thanks for teaching me!
