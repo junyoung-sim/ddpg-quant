@@ -18,10 +18,16 @@ std::vector<double> sample_state(std::vector<std::vector<double>> &env, unsigned
     return state;
 }
 
-std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state, double eps) {
+std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state,
+                                   double eps, std::default_random_engine &seed) {
     double explore = (double)rand() / RAND_MAX;
-    std::cout << (explore < eps ? "(E) " : "(P) ");
-    return actor.forward(state, explore < eps);
+    std::vector<double> action = actor.forward(state, explore < eps);
+    if(explore < eps) {
+        std::cout << "(E) ";
+        std::shuffle(action.begin(), action.end(), seed);
+    }
+    else std::cout << "(P) ";
+    return action;
 }
 
 void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
@@ -46,18 +52,17 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
         for(unsigned int t = START; t <= TERMINAL; t++) {
             double eps = std::max(EPS_MIN, EPS_INIT + (EPS_MIN - EPS_INIT) / CAPACITY * frames++);
             std::vector<double> state = sample_state(valuation, t);
-            std::vector<double> action = epsilon_greedy(actor, state, eps);
+            std::vector<double> action = epsilon_greedy(actor, state, eps, seed);
 
-            double sharpe = 0.00;
-            std::vector<double> portfolio_return(OBS, 0.00);
+            double portfolio_return = 0.00, portfolio_risk = 0.00, sharpe = 0.00;
             for(unsigned int i = 0; i < tickers.size(); i++) {
                 std::vector<double> tmp = {price[i].begin() + t+1-OBS, price[i].begin() + t+2};
                 std::vector<double> r = returns(tmp);
-                for(unsigned int k = 0; k < OBS; k++)
-                    portfolio_return[k] += action[i] * (1.00 + r[k]);
+                portfolio_return += action[i] * (1.00 + r.back());
+                portfolio_risk += action[i] * pow(stdev(r), 2);
             }
-            total_return *= portfolio_return.back();
-            sharpe = (portfolio_return.back() - 1.00) / stdev(portfolio_return);
+            total_return *= portfolio_return;
+            sharpe = (portfolio_return - 1.00) / sqrt(portfolio_risk);
             sharpe_sum += sharpe;
 
             std::vector<double> next_state = sample_state(valuation, t+1);
@@ -71,7 +76,6 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             std::cout << " L=" << actor_loss_sum / update_count << "\n";
 
             replay.push_back(Memory(state, action, next_state, sharpe));
-            std::vector<double>().swap(portfolio_return);
 
             if(replay.size() == CAPACITY) {
                 std::vector<unsigned int> index(CAPACITY, 0);

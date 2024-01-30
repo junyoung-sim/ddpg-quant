@@ -1,11 +1,11 @@
 # Deep Deterministic Policy Gradient and Geometric Brownian Motion for Portfolio Optimization
 
-This algorithm utilizes Geometric Brownian Motion to predict asset valuation cycles fed into a Deep Deterministic Policy Gradient model that maximizes the Sharpe ratio of any given portfolio.
+This algorithm utilizes Geometric Brownian Motion to predict asset valuation cycles fed into a Deep Deterministic Policy Gradient model that maximizes the Sharpe ratio of any given portfolio. (WORK IN PROGRESS!)
 
 ### Motivation
 
 1) My previous trading models based on DQNs have a discrete action space advising which trading action to take for a certain stock. The time has come to learn about continuous action spaces to optimizing portfolio weightings, which is more often a useful and challenging task.
-2) My previous trading models are made profitable through occasional short selling. However, I have come to realize that short selling has bad taste, both practically and morally. That said, I decide to shift my focus on a better problem: asset and wealth management through portfolio optimization. 
+2) My previous trading models are made profitable through occasional short selling. However, I have come to realize that short selling has bad taste, both practically and morally. That said, I decide to shift my focus on a better problem: asset and wealth management through portfolio optimization.
 
 ## Geometric Brownian Motion for Estimating Asset Valuation Cycles
 
@@ -56,17 +56,19 @@ Suppose we have a portfolio with N distinct assets and would like to optimize th
 
 For each asset, compute the **valuation series** of its entire historical period with an observation period of 60-days and extrapolation period of 20-days. At any given time, the state of each asset is its valuation series during the past 100-days (look-back). Sample values from the valuation series every 5-days where the most recent valuation score must be included. This sufficiently captures each asset's valuation trend with reduced noise and dimensions.
 
-### Reward
-
-Maximizing daily returns is an intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe). The Sharpe ratio for this model is calculated by the ratio of the portfolio's daily return to the standard deviation in daily returns of the portfolio if the model's portfolio weights were held constant during the past 100-days (look-back).
-
 ### Action
 
 The model outputs the portfolio's weights via a softmax layer that will be used for the next market day.
 
+### Reward
+
+Maximizing daily returns is an intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe). The Sharpe ratio for this model is calculated by the ratio of the portfolio's daily return to the standard deviation in daily returns of the portfolio during the past 100-days (look-back).
+
+$$S=\frac{\sum_{i} a_i \Delta{p_i}}{\sqrt{\sum_{i} a_i \sigma_{i}^2}}$$
+
 ### DDPG
 
-SPY (S&P 500), IEF (10-yr US Treasury), EUR=X (Euro-USD), GLD (Gold)
+SPY (S&P 500), EUR=X (Euro-USD), CHFUSD=X (USD-CHF), GLD (Gold)
 
 | Hyperparameters | Value |
 |-----------------|-------|

@@ -39,7 +39,8 @@ public:
 
 std::vector<double> sample_state(std::vector<std::vector<double>> &env, unsigned int t);
 
-std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state, double eps);
+std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state,
+                                   double eps, std::default_random_engine &seed);
 
 void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
            std::vector<std::vector<double>> &valuation, Net &actor, Net &critic, std::default_random_engine &seed);

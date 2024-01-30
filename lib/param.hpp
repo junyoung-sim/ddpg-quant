@@ -13,7 +13,7 @@
 #define BATCH 10
 
 #define EPS_INIT 1.00
-#define EPS_MIN 0.25
+#define EPS_MIN 0.10
 #define GAMMA 0.90
 #define TAU 0.01
 #define ALPHA 0.000001
