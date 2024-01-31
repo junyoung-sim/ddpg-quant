@@ -50,10 +50,14 @@ int main(int argc, char *argv[])
     actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
     actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
     actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
+    actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
+    actor.add_layer(tickers.size() * OBS/INT, tickers.size() * OBS/INT);
     actor.add_layer(tickers.size() * OBS/INT, tickers.size()); actor.use_softmax();
     actor.init(seed);
     actor.load(actor_path);
 
+    critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));
+    critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));
     critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));
     critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));
     critic.add_layer(tickers.size() * (OBS/INT+1), tickers.size() * (OBS/INT+1));

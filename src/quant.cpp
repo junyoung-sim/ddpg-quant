@@ -18,16 +18,10 @@ std::vector<double> sample_state(std::vector<std::vector<double>> &env, unsigned
     return state;
 }
 
-std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state,
-                                   double eps, std::default_random_engine &seed) {
+std::vector<double> epsilon_greedy(Net &actor, std::vector<double> &state, double eps) {
     double explore = (double)rand() / RAND_MAX;
-    std::vector<double> action = actor.forward(state, explore < eps);
-    if(explore < eps) {
-        std::cout << "(E) ";
-        std::shuffle(action.begin(), action.end(), seed);
-    }
-    else std::cout << "(P) ";
-    return action;
+    std::cout << (explore < eps ? "(E) " : "(P) ");
+    return actor.forward(state, explore < eps);
 }
 
 void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
@@ -52,7 +46,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
         for(unsigned int t = START; t <= TERMINAL; t++) {
             double eps = std::max(EPS_MIN, EPS_INIT + (EPS_MIN - EPS_INIT) / CAPACITY * frames++);
             std::vector<double> state = sample_state(valuation, t);
-            std::vector<double> action = epsilon_greedy(actor, state, eps, seed);
+            std::vector<double> action = epsilon_greedy(actor, state, eps);
 
             double sharpe = 0.00;
             std::vector<double> portfolio_return(OBS, 0.00);
