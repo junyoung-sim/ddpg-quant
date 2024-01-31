@@ -54,15 +54,16 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             std::vector<double> state = sample_state(valuation, t);
             std::vector<double> action = epsilon_greedy(actor, state, eps, seed);
 
-            double portfolio_return = 0.00, portfolio_risk = 0.00, sharpe = 0.00;
+            double sharpe = 0.00;
+            std::vector<double> portfolio_return(OBS, 0.00);
             for(unsigned int i = 0; i < tickers.size(); i++) {
                 std::vector<double> tmp = {price[i].begin() + t+1-OBS, price[i].begin() + t+2};
                 std::vector<double> r = returns(tmp);
-                portfolio_return += action[i] * (1.00 + r.back());
-                portfolio_risk += action[i] * pow(stdev(r), 2);
+                for(unsigned int k = 0; k < OBS; k++)
+                    portfolio_return[k] += action[i] * (1.00 + r[k]);
             }
-            total_return *= portfolio_return;
-            sharpe = (portfolio_return - 1.00) / sqrt(portfolio_risk);
+            total_return *= portfolio_return.back();
+            sharpe = (portfolio_return.back() - 1.00) / stdev(portfolio_return);
             sharpe_sum += sharpe;
 
             std::vector<double> next_state = sample_state(valuation, t+1);
