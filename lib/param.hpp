@@ -5,7 +5,7 @@
 #define VEXT 20
 #define VITR 1000
 
-#define OBS 100
+#define OBS 200
 #define INT 5
 
 #define ITR 100
@@ -15,7 +15,7 @@
 #define EPS_INIT 1.00
 #define EPS_MIN 0.10
 #define GAMMA 0.90
-#define TAU 0.01
+#define TAU 0.001
 #define ALPHA 0.000001
 #define LAMBDA 0.01
 
