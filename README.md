@@ -5,7 +5,7 @@ This algorithm utilizes Geometric Brownian Motion to predict asset valuation cyc
 ### Motivation
 
 1) My previous trading models based on DQNs have a discrete action space advising which trading action to take for a certain stock. The time has come to learn about continuous action spaces to optimizing portfolio weightings, which is more often a useful and challenging task.
-2) My previous trading models are made profitable through occasional short selling. However, I have come to realize that short selling has bad taste, both practically and morally. That said, I decide to shift my focus on a better problem: asset and wealth management through portfolio optimization.
+2) My previous trading models are made profitable through occasional short selling. However, I have come to realize that short selling has bad taste, both practically and morally, which is why I decided to work on portfolio management (long-only).
 
 ## Geometric Brownian Motion for Estimating Asset Valuation Cycles
 
@@ -66,7 +66,9 @@ Maximizing daily returns is an intuitive reward system for portfolio optimizatio
 
 ### DDPG
 
-EUR=X (Euro-USD), JPY=X (Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
+ZB=F (US Treasury Futures), EUR=X (Euro-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
+
+WORK IN PROGRESS!!!
 
 Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's total return, average daily Sharpe ratio, and actor loss.
 
