@@ -66,23 +66,7 @@ Maximizing daily returns is an intuitive reward system for portfolio optimizatio
 
 ### DDPG
 
-SPY (S&P 500), EUR=X (Euro-USD), CHFUSD=X (USD-CHF), GLD (Gold)
-
-| Hyperparameters | Value |
-|-----------------|-------|
-| Iterations | 100 |
-| Replay Memory Capacity | 100000 |
-| Batch Size | 10 |
-| Initial Exploration Rate | 1.00 |
-| Minimum Exploration Rate | 0.25 |
-| $\gamma$ | 0.90 |
-| $\tau$ | 0.01 |
-| $\alpha$ | 0.000001 |
-| $\lambda$ | 0.01 |
-| Hidden Layer Activation | ReLU |
-| Actor Output Layer | Softmax |
-| Actor Shape | (80, 80, 80, 8) |
-| Critic Shape | (88, 88, 88, 1) |
+EUR=X (Euro-USD), JPY=X (Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
 
 Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's total return, average daily Sharpe ratio, and actor loss.
 
