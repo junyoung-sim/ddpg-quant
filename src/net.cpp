@@ -59,7 +59,7 @@ std::vector<double> Net::forward(std::vector<double> &x, bool noise) {
             }
             dot += layers[l].node(n)->bias();
 
-            if(l == layers.size() - 1 && noise) dot += gaussian(*seed);
+            if(l == layers.size() - 1 && noise) dot *= gaussian(*seed);
 
             layers[l].node(n)->init();
             layers[l].node(n)->set_sum(dot);

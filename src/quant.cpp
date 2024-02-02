@@ -36,11 +36,10 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     std::vector<Memory> replay;
 
     std::ofstream out("./res/build");
-    out << "return,sharpe,loss\n";
+    out << "return,loss\n";
 
     for(unsigned int itr = 1; itr <= ITR; itr++) {
         double total_return = 1.00;
-        double sharpe_sum = 0.00;
         double actor_loss_sum = 0.00;
         unsigned int update_count = 0;
         for(unsigned int t = START; t <= TERMINAL; t++) {
@@ -48,7 +47,7 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             std::vector<double> state = sample_state(valuation, t);
             std::vector<double> action = epsilon_greedy(actor, state, eps);
 
-            double sharpe = 0.00;
+            double reward = 0.00;
             std::vector<double> portfolio_return(OBS, 0.00);
             for(unsigned int i = 0; i < tickers.size(); i++) {
                 std::vector<double> tmp = {price[i].begin() + t+1-OBS, price[i].begin() + t+2};
@@ -56,9 +55,8 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 for(unsigned int k = 0; k < OBS; k++)
                     portfolio_return[k] += action[i] * (1.00 + r[k]);
             }
+            reward = portfolio_return.back() - 1.00;
             total_return *= portfolio_return.back();
-            sharpe = (portfolio_return.back() - 1.00) / stdev(portfolio_return);
-            sharpe_sum += sharpe;
 
             std::vector<double> next_state = sample_state(valuation, t+1);
 
@@ -67,10 +65,9 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 std::cout << tickers[i] << ":" << action[i];
                 if(i != tickers.size() - 1) std::cout << ", ";
             }
-            std::cout << "] ROI=" << total_return << " SR=" << sharpe;
-            std::cout << " L=" << actor_loss_sum / update_count << "\n";
+            std::cout << "] ROI=" << total_return << " L=" << actor_loss_sum / update_count << "\n";
 
-            replay.push_back(Memory(state, action, next_state, sharpe));
+            replay.push_back(Memory(state, action, next_state, reward));
 
             if(replay.size() == CAPACITY) {
                 std::vector<unsigned int> index(CAPACITY, 0);
@@ -92,7 +89,6 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
         }
 
         out << total_return << ",";
-        out << sharpe_sum / (TERMINAL-START+1) << ",";
         out << actor_loss_sum / update_count << "\n";
     }
 

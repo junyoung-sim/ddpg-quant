@@ -62,7 +62,9 @@ The model outputs the portfolio's weights via a softmax layer that will be used 
 
 ### Reward
 
-Maximizing daily returns is an intuitive reward system for portfolio optimization. However, it is more ideal to maximize the return-over-risk ratio (Sharpe). The Sharpe ratio for this model is calculated by the ratio of the portfolio's daily return to the standard deviation of the portfolio's daily returns during the past 100-days (look-back).
+The model is optimized to maximize the given portfolio's daily return as shown in the equation below:
+
+$$r_t=\sum_{i} a_i \Delta{p_i}$$
 
 ### DDPG
 
