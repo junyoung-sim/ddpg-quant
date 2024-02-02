@@ -66,6 +66,8 @@ The model is optimized to maximize the given portfolio's daily return as shown i
 
 $$r_t=\sum_{i} a_i \Delta{p_i}$$
 
+Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each asset, respectively.
+
 ### DDPG
 
 ZB=F (US Treasury Futures), EUR=X (Euro-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
