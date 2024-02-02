@@ -8,7 +8,7 @@
 #define OBS 100
 #define INT 5
 
-#define ITR 1000
+#define ITR 100
 #define CAPACITY 100000
 #define BATCH 10
 
