@@ -75,7 +75,7 @@ Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each
 EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
 
 | Hyperparameters | Value |
-|-----------------|-------|
+|:---------------:|:-----:|
 | Valuation Series (OBS) | 60-days |
 | Valuation Series (EXT) | 20-days |
 | Valuation Series (ITR) | 1000 |
