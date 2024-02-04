@@ -36,9 +36,10 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
     std::vector<Memory> replay;
 
     std::ofstream out("./res/build");
-    out << "return,loss\n";
+    out << "total,daily,loss\n";
 
     for(unsigned int itr = 1; itr <= ITR; itr++) {
+        double reward_sum = 0.00;
         double total_return = 1.00;
         double actor_loss_sum = 0.00;
         unsigned int update_count = 0;
@@ -47,16 +48,14 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             std::vector<double> state = sample_state(valuation, t);
             std::vector<double> action = epsilon_greedy(actor, state, eps);
 
-            double reward = 0.00;
-            std::vector<double> portfolio_return(OBS, 0.00);
+            double portfolio_return = 0.00, reward = 0.00;
             for(unsigned int i = 0; i < tickers.size(); i++) {
-                std::vector<double> tmp = {price[i].begin() + t+1-OBS, price[i].begin() + t+2};
-                std::vector<double> r = returns(tmp);
-                for(unsigned int k = 0; k < OBS; k++)
-                    portfolio_return[k] += action[i] * (1.00 + r[k]);
+                double dp = (price[i][t+1] - price[i][t]) / price[i][t];
+                portfolio_return += action[i] * (1.00 + dp);
             }
-            reward = portfolio_return.back() - 1.00;
-            total_return *= portfolio_return.back();
+            total_return *= portfolio_return;
+            reward = portfolio_return - 1.00;
+            reward_sum += reward * 100;
 
             std::vector<double> next_state = sample_state(valuation, t+1);
 
@@ -65,7 +64,8 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 std::cout << tickers[i] << ":" << action[i];
                 if(i != tickers.size() - 1) std::cout << ", ";
             }
-            std::cout << "] ROI=" << total_return << " L=" << actor_loss_sum / update_count << "\n";
+            std::cout << "] ROI=" << total_return << " MDR=" << reward_sum / (t-START+1);
+            std::cout << " L=" << actor_loss_sum / update_count << "\n";
 
             replay.push_back(Memory(state, action, next_state, reward));
 
@@ -88,7 +88,8 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
             }
         }
 
-        out << total_return << ",";
+        out << (total_return - 1.00) * 100 << ",";
+        out << reward_sum / (TERMINAL-START+1) << ",";
         out << actor_loss_sum / update_count << "\n";
     }
 
