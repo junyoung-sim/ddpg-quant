@@ -11,6 +11,7 @@ def mavg(x, w):
 
 if __name__ == "__main__":
     log = pd.read_csv("./res/build")
+    log = log.dropna().reset_index()
 
     plt.figure(figsize=(10,5))
 

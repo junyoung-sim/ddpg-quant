@@ -70,11 +70,9 @@ Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each
 
 ### DDPG
 
-ZB=F (US Treasury Futures), EUR=X (Euro-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
+EUR=X (Euro-USD), JPY=X (Japanese Yen-USD)CHFUSD=X (USD-Swiss Franc), GLD (Gold)
 
-WORK IN PROGRESS!!!
-
-Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's total return, average daily Sharpe ratio, and actor loss.
+Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's total return, average daily return, and actor loss.
 
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/build.png)
 

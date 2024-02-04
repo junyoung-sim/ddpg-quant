@@ -54,8 +54,8 @@ void build(std::vector<std::string> &tickers, std::vector<std::vector<double>> &
                 portfolio_return += action[i] * (1.00 + dp);
             }
             total_return *= portfolio_return;
-            reward = portfolio_return - 1.00;
-            reward_sum += reward * 100;
+            reward = (portfolio_return - 1.00) * 100;
+            reward_sum += reward;
 
             std::vector<double> next_state = sample_state(valuation, t+1);
 
