@@ -208,19 +208,49 @@ void test(std::vector<std::string> &tickers, std::vector<std::vector<double>> &p
     Net target_critic; copy(critic, target_critic, 1.00);
 
     const unsigned int START = OBS-1;
-    const unsigned int TERMINAL = price[0].size()-1;
+    const unsigned int TERMINAL = price[0].size()-2;
 
     double portfolio_value = 1.00;
-    double market_value = 1.00;
+
+    std::ofstream out_state("./res/state");
+    std::ofstream out_action("./res/action");
+    std::ofstream out_portfolio("./res/portfolio");
+
+    for(unsigned int i = 0; i < tickers.size(); i++) {
+        out_state << tickers[i] << (i != tickers.size() - 1 ? "," : "");
+        out_action << tickers[i] << (i != tickers.size() - 1 ? "," : "");
+    }
+    out_state << "\n";
+    out_action << "\n";
+    out_portfolio << "value\n";
 
     for(unsigned int t = START; t <= TERMINAL; t++) {
         std::vector<double> state = sample_state(valuation, t);
         std::vector<double> action = epsilon_greedy(actor, state, 0.00);
 
-        double portfolio_return = 0.00, market_return = 0.00;
+        std::cout << "T=" << t << " A=[";
+
+        double portfolio_return = 0.00;
         for(unsigned int i = 0; i < tickers.size(); i++) {
+            out_state << state[(i+1)*(OBS/INT)-1] << (i != tickers.size() - 1 ? "," : "");
+            out_action << action[i] << (i != tickers.size() - 1 ? "," : "");
+
             double dp = (price[i][t+1] - price[i][t]) / price[i][t];
             portfolio_return += action[i] * (1.00 + dp);
+
+            std::cout << tickers[i] << ":" << action[i];
+            if(i != tickers.size() - 1) std::cout << ", ";
         }
+        out_state << "\n";
+        out_action << "\n";
+
+        portfolio_value *= portfolio_return;
+        out_portfolio << portfolio_value << "\n";
+
+        std::cout << "] ROI=" << portfolio_value << "\n";
     }
+
+    out_state.close();
+    out_action.close();
+    out_portfolio.close();
 }

@@ -95,9 +95,11 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 | Actor Architecture | (80,80,80,80,80,8) |
 | Critic Architecture | (88,88,88,88,88,1) |
 
-Traverse the entire historical period for each iteration. For each iteration, record the portfolio's average daily return and actor loss.
-
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/build.png)
+
+![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/test_state.png)
+
+![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/test_portfolio.png)
 
 ## References
 

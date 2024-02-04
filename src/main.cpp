@@ -65,7 +65,9 @@ int main(int argc, char *argv[])
     critic.init(seed);
     critic.load(critic_path);
 
-    build(tickers, price, valuation, actor, critic, seed);
+    if(mode == "build") build(tickers, price, valuation, actor, critic, seed);
+    else if(mode == "test") test(tickers, price, valuation, actor, critic);
+    else {}
 
     actor.save(actor_path);
     critic.save(critic_path);
