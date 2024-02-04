@@ -104,6 +104,11 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 **Portfolio Value & Weights**
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/test_portfolio.png)
 
+Observations
+
+1) Extremely stable growth in portfolio value
+2) Model developed a pairs trading strategy (EUR=X & GLD, CHFUSD & JPY=X)
+
 ## References
 
 Thanks for teaching me!
