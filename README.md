@@ -87,6 +87,7 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 | Exploration | Uncorrelated Gaussian action noise |
 | Initial $\epsilon$ | 1.00 |
 | Minimum $\epsilon$ | 0.01 |
+| Decay $\epsilon$ | Linear; capacity |
 | $\gamma$ | 0.99 |
 | $\tau$ | 0.001 |
 | $\alpha$ | 0.000001 |
@@ -94,7 +95,7 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 | Actor Architecture | (80,80,80,80,80,8) |
 | Critic Architecture | (88,88,88,88,88,1) |
 
-Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's average daily return and actor loss.
+Traverse the entire historical period for each iteration. For each iteration, record the portfolio's average daily return and actor loss.
 
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/build.png)
 
