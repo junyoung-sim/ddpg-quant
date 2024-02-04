@@ -95,10 +95,13 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 | Actor Architecture | (80,80,80,80,80,8) |
 | Critic Architecture | (88,88,88,88,88,1) |
 
+**Training Performance**
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/build.png)
 
+**Portfolio State Space**
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/test_state.png)
 
+**Portfolio Value & Weights**
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/test_portfolio.png)
 
 ## References
