@@ -70,7 +70,9 @@ Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each
 
 ### DDPG
 
-EUR=X (Euro-USD), JPY=X (Japanese Yen-USD)CHFUSD=X (USD-Swiss Franc), GLD (Gold)
+**Forex Portfolio**
+
+EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
 
 Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's total return, average daily return, and actor loss.
 
