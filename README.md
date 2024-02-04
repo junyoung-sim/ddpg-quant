@@ -74,6 +74,26 @@ Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each
 
 EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
 
+| Hyperparameters | Value |
+|-----------------|-------|
+| Valuation Series (OBS) | 60-days |
+| Valuation Series (EXT) | 20-days |
+| Valuation Series (ITR) | 1000 |
+| Look-Back | 100-days |
+| Interval | 5-days |
+| Iterations | 100 |
+| Capacity | 100000 |
+| Batch | 10 |
+| Exploration | Uncorrelated Gaussian action noise |
+| Initial $\epsilon$ | 1.00 |
+| Minimum $\epsilon$ | 0.01 |
+| $\gamma$ | 0.99 |
+| $\tau$ | 0.001 |
+| $\alpha$ | 0.000001 |
+| $\lambda$ | 0.01 |
+| Actor Architecture | (80,80,80,80,80,8) |
+| Critic Architecture | (88,88,88,88,88,1) |
+
 Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's total return, average daily return, and actor loss.
 
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/build.png)
