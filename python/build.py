@@ -15,15 +15,7 @@ if __name__ == "__main__":
 
     plt.figure(figsize=(10,5))
 
-    plt.subplot(3, 1, 1)
-    plt.plot(log["total"], label="total (%)")
-    total_mavg = mavg(log["total"], WINDOW)
-    for i in range(WINDOW-1):
-        total_mavg = np.insert(total_mavg, 0, np.nan)
-    plt.plot(total_mavg, color="orange")
-    plt.legend()
-
-    plt.subplot(3, 1, 2)
+    plt.subplot(2, 1, 1)
     plt.plot(log["daily"], label="daily (%)")
     daily_mavg = mavg(log["daily"], WINDOW)
     for i in range(WINDOW-1):
@@ -31,7 +23,7 @@ if __name__ == "__main__":
     plt.plot(daily_mavg, color="orange")
     plt.legend()
 
-    plt.subplot(3, 1, 3)
+    plt.subplot(2, 1, 2)
     plt.plot(log["loss"], label="loss")
     plt.legend()
 

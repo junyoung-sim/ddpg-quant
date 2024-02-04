@@ -94,7 +94,7 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 | Actor Architecture | (80,80,80,80,80,8) |
 | Critic Architecture | (88,88,88,88,88,1) |
 
-Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's total return, average daily return, and actor loss.
+Traverse the entire historical period for each iteration. Decrease exploration rate linearly as the replay memory reaches its capacity. Model exploration is done by adding uncorrelated gaussian noise to the action space. For each iteration, record the portfolio's average daily return and actor loss.
 
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/build.png)
 

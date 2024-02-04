@@ -201,3 +201,26 @@ double optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net
 
     return actor_loss;
 }
+
+void test(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
+          std::vector<std::vector<double>> &valuation, Net &actor, Net &critic) {
+    Net target_actor; copy(actor, target_actor, 1.00);
+    Net target_critic; copy(critic, target_critic, 1.00);
+
+    const unsigned int START = OBS-1;
+    const unsigned int TERMINAL = price[0].size()-1;
+
+    double portfolio_value = 1.00;
+    double market_value = 1.00;
+
+    for(unsigned int t = START; t <= TERMINAL; t++) {
+        std::vector<double> state = sample_state(valuation, t);
+        std::vector<double> action = epsilon_greedy(actor, state, 0.00);
+
+        double portfolio_return = 0.00, market_return = 0.00;
+        for(unsigned int i = 0; i < tickers.size(); i++) {
+            double dp = (price[i][t+1] - price[i][t]) / price[i][t];
+            portfolio_return += action[i] * (1.00 + dp);
+        }
+    }
+}
