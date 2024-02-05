@@ -14,7 +14,7 @@ if __name__ == "__main__":
     k = 1
     plt.figure(figsize=(25,15))
     for key in state.keys():
-        plt.subplot(2, 2, k)
+        plt.subplot(state.keys().shape[0], 1, k)
         plt.title(f"State: {key}")
         plt.plot(state[key], label=key, color=colors[k-1])
         plt.legend()
