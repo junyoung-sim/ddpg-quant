@@ -106,8 +106,10 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 
 Observations
 
-1) Extremely stable growth in portfolio value
-2) Model developed a pairs trading strategy (EUR=X & GLD, CHFUSD & JPY=X)
+1) Extremely stable growth in portfolio value.
+2) Model developed a pairs trading strategy (EUR=X & GLD, CHFUSD & JPY=X).
+3) EUR=X and JPY=X behave similarly, hence their portfolio weights also change in a similar pattern.
+4) CHFUSD, although with a relatively low weighting between 10 to 20%, balances out EUR=X and JPY=X.
 
 ## References
 
