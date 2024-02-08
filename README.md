@@ -70,10 +70,6 @@ Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each
 
 ### DDPG
 
-**Forex Portfolio**
-
-EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
-
 | Hyperparameters | Value |
 |:---------------:|:-----:|
 | Valuation Series (OBS) | 60-days |
@@ -95,21 +91,39 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 | Actor Architecture | (80,80,80,80,80,8) |
 | Critic Architecture | (88,88,88,88,88,1) |
 
+#### Forex Portfolio
+
+EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
+
 **Training Performance**
-![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/build.png)
+![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/forex/build.png)
 
 **Portfolio State Space**
-![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/test_state.png)
+![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/forex/test_state.png)
 
 **Portfolio Value & Weights**
-![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/test_portfolio.png)
-
-Observations
+![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/forex/test_portfolio.png)
 
 1) Extremely stable growth in portfolio value.
 2) Model developed a pairs trading strategy (EUR=X & GLD, CHFUSD & JPY=X).
 3) EUR=X and JPY=X behave similarly, hence their portfolio weights also change in a similar pattern.
 4) CHFUSD, although with a relatively low weighting between 10 to 20%, balances out EUR=X and JPY=X.
+
+#### Korea Portfolio
+
+EWY (MSCI Korea), KRW=X (Korean Won-USD), IEF (US Treasury 10-yr), GLD (Gold)
+
+**Training Performance**
+![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/korea/build.png)
+
+**Portfolio State Space**
+![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/korea/test_state.png)
+
+**Portfolio Value & Weights**
+![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/korea/test_portfolio.png)
+
+1) Portfolio's total ROI is lower than 100% EWY buy-and-hold, but the portfolio's growth is more stable.
+2) Model learned to take advantage of the negative correlation between EWY and KRW=X
 
 ## References
 
