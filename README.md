@@ -68,7 +68,7 @@ $$r_t=\sum_{i} a_i \Delta{p_i}$$
 
 Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each asset, respectively.
 
-### DDPG
+### DDPG Setup
 
 | Hyperparameters | Value |
 |:---------------:|:-----:|
@@ -90,6 +90,8 @@ Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each
 | $\lambda$ | 0.01 |
 | Actor Architecture | (80,80,80,80,80,8) |
 | Critic Architecture | (88,88,88,88,88,1) |
+
+### Results
 
 #### Forex Portfolio
 
