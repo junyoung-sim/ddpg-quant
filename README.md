@@ -84,10 +84,10 @@ Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each
 | Initial $\epsilon$ | 1.00 |
 | Minimum $\epsilon$ | 0.01 |
 | Decay $\epsilon$ | Linear; capacity |
-| $\gamma$ | 0.99 |
-| $\tau$ | 0.001 |
-| $\alpha$ | 0.000001 |
-| $\lambda$ | 0.01 |
+| $\gamma$ (Bellman) | 0.99 |
+| $\tau$ (Soft Update) | 0.001 |
+| $\alpha$ (Learning Rate) | 0.000001 |
+| $\lambda$ (L2 Regularization) | 0.01 |
 | Actor Architecture | (80,80,80,80,80,8) |
 | Critic Architecture | (88,88,88,88,88,1) |
 
