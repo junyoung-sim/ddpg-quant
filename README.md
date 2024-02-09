@@ -124,7 +124,7 @@ EWY (MSCI Korea), KRW=X (Korean Won-USD), IEF (US Treasury 10-yr), GLD (Gold)
 **Portfolio Value & Weights**
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/korea/test_portfolio.png)
 
-1) Portfolio's total ROI is lower than 100% EWY buy-and-hold, but the portfolio's growth is more stable.
+1) Portfolio's total ROI is lower than 100% EWY buy-and-hold, but the portfolio's growth is more stable (less volatility and steady growth).
 2) Model learned to take advantage of the negative correlation between EWY and KRW=X
 
 ## References
