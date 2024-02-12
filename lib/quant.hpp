@@ -55,5 +55,7 @@ double optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net
 void test(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
           std::vector<std::vector<double>> &valuation, Net &actor, Net &critic);
 
+void run(std::vector<std::string> &tickers, std::vector<std::vector<double>> &valuation, Net &actor);
+
 
 #endif

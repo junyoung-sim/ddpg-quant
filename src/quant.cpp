@@ -204,9 +204,6 @@ double optimize(Memory &memory, Net &critic, Net &target_critic, Net &actor, Net
 
 void test(std::vector<std::string> &tickers, std::vector<std::vector<double>> &price,
           std::vector<std::vector<double>> &valuation, Net &actor, Net &critic) {
-    Net target_actor; copy(actor, target_actor, 1.00);
-    Net target_critic; copy(critic, target_critic, 1.00);
-
     const unsigned int START = OBS-1;
     const unsigned int TERMINAL = price[0].size()-2;
 
@@ -248,9 +245,28 @@ void test(std::vector<std::string> &tickers, std::vector<std::vector<double>> &p
         out_portfolio << portfolio_value << "\n";
 
         std::cout << "] ROI=" << portfolio_value << "\n";
+
+        std::vector<double>().swap(state);
+        std::vector<double>().swap(action);
     }
 
     out_state.close();
     out_action.close();
     out_portfolio.close();
+}
+
+void run(std::vector<std::string> &tickers, std::vector<std::vector<double>> &valuation, Net &actor) {
+    const unsigned int TERMINAL = valuation[0].size()-1;
+    std::vector<double> state = sample_state(valuation, TERMINAL);
+    std::vector<double> action = epsilon_greedy(actor, state, 0.00);
+
+    std::cout << "A=[";
+    for(unsigned int i = 0; i < tickers.size(); i++) {
+        std::cout << tickers[i] << ":" << action[i];
+        if(i != tickers.size() - 1) std::cout << ", ";
+    }
+    std::cout << "]\n";
+
+    std::vector<double>().swap(state);
+    std::vector<double>().swap(action);
 }

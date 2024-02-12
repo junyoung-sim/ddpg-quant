@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
 
     if(mode == "build") build(tickers, price, valuation, actor, critic, seed);
     else if(mode == "test") test(tickers, price, valuation, actor, critic);
+    else if(mode == "run") run(tickers, valuation, actor);
     else {}
 
     actor.save(actor_path);
