@@ -2,6 +2,8 @@
 
 This algorithm utilizes Geometric Brownian Motion to predict asset valuation cycles fed into a Deep Deterministic Policy Gradient model that maximizes the return of any given portfolio.
 
+Everything from scratch, as per usual.
+
 ### Motivation
 
 1) My previous trading models based on DQNs have a discrete action space advising which trading action to take for a certain stock. The time has come to learn about continuous action spaces to optimizing portfolio weightings, which is more often a useful and challenging task.
