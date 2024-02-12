@@ -91,9 +91,9 @@ Note that $a_i$ and $\Delta{p_i}$ are the weights and daily price change of each
 | Actor Architecture | (80,80,80,80,80,8) |
 | Critic Architecture | (88,88,88,88,88,1) |
 
-### Results
+## Results
 
-#### Forex Portfolio
+### Forex Portfolio
 
 EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gold)
 
@@ -111,7 +111,7 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 3) EUR=X and JPY=X behave similarly, hence their portfolio weights also change in a similar pattern.
 4) CHFUSD, although with a relatively low weighting between 10 to 20%, balances out EUR=X and JPY=X.
 
-#### Korea Portfolio
+### Korea Portfolio
 
 EWY (MSCI Korea), KRW=X (Korean Won-USD), IEF (US Treasury 10-yr), GLD (Gold)
 
