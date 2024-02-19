@@ -108,26 +108,9 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 **Portfolio Value & Weights**
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/forex/test_portfolio.png)
 
-1) Extremely stable growth in portfolio value.
-2) Model developed a pairs trading strategy (EUR=X & GLD, CHFUSD & JPY=X).
-3) EUR=X and JPY=X behave similarly, hence their portfolio weights also change in a similar pattern.
-4) CHFUSD, although with a relatively low weighting between 10 to 20%, balances out EUR=X and JPY=X.
-
-### Korea Portfolio
-
-EWY (MSCI Korea), KRW=X (Korean Won-USD), IEF (US Treasury 10-yr), GLD (Gold)
-
-**Training Performance**
-![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/korea/build.png)
-
-**Portfolio State Space**
-![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/korea/test_state.png)
-
-**Portfolio Value & Weights**
-![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/korea/test_portfolio.png)
-
-1) Portfolio's total ROI is lower than 100% EWY buy-and-hold, but the portfolio's growth is more stable (less volatility and steady growth).
-2) Model learned to take advantage of the negative correlation between EWY and KRW=X
+1) Extremely stable growth in portfolio value despite GLD price plummeting after the 2008 financial crisis.
+2) The model learned a dynamic pairs strategy between EUR=X-GLD and EUR=X-CHFUSD. JPY=X turns out to be not so important in this portfolio. Indeed, EUR=X and JPY=X holdings is simply holding the US dollar.
+3) The model learned to increase holdings when valuation is too low and decrease holdings when valuation is too high.
 
 ## References
 

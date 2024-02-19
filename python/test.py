@@ -36,6 +36,6 @@ if __name__ == "__main__":
         plt.plot(action[key], label=key, color=colors[k-1])
         plt.legend()
         k += 1
-    plt.ylim(0.00, 0.60)
+    plt.ylim(0.00, 0.70)
 
     plt.savefig("./res/test_portfolio.png")

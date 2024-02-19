@@ -142,7 +142,7 @@ void optimize_actor(Net &actor, std::vector<double> &state,
             }
             else part = actor.layer(l)->node(n)->err() * drelu(actor.layer(l)->node(n)->sum());
 
-            double updated_bias = actor.layer(l)->node(n)->bias() - ALPHA * part;
+            double updated_bias = actor.layer(l)->node(n)->bias() + ALPHA * part;
             actor.layer(l)->node(n)->set_bias(updated_bias);
 
             for(unsigned int i = 0; i < actor.layer(l)->in_features(); i++) {
