@@ -108,8 +108,8 @@ EUR=X (Euro-USD), JPY=X (Japanese Yen-USD), CHFUSD=X (USD-Swiss Franc), GLD (Gol
 **Portfolio Value & Weights**
 ![alt text](https://github.com/junyoung-sim/ddpg-quant/blob/main/res/forex/test_portfolio.png)
 
-1) Extremely stable growth in portfolio value despite GLD price plummeting after the 2008 financial crisis.
-2) The model learned a dynamic pairs strategy between EUR=X-GLD and EUR=X-CHFUSD. JPY=X turns out to be not so important in this portfolio. Indeed, EUR=X and JPY=X holdings is simply holding the US dollar.
+1) Extremely stable growth in portfolio value.
+2) The model learned a dynamic pairs strategy between EUR=X-GLD and EUR=X-CHFUSD. JPY=X turns out to be not so important in this portfolio. Indeed, the sum of EUR=X and JPY=X holdings is simply the portfolio's total US dollar index holdings.
 3) The model learned to increase holdings when valuation is too low and decrease holdings when valuation is too high.
 
 ## References
