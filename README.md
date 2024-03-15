@@ -4,7 +4,7 @@ This algorithm utilizes Geometric Brownian Motion to predict asset valuation cyc
 
 Everything from scratch, as per usual.
 
-**A more abstract and experimental version of this work is uploaded in the follwing repository:w**
+**A more abstract and experimental version of this work is uploaded in the follwing repository:**
 
 https://github.com/junyoung-sim/portfolio
 
