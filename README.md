@@ -4,6 +4,9 @@ This algorithm utilizes Geometric Brownian Motion to predict asset valuation cyc
 
 Everything from scratch, as per usual.
 
+**A more abstract and experimental version of this work is uploaded in the following repository!**
+![alt text](https://github.com/junyoung-sim/portfolio)
+
 ### Motivation
 
 1) My previous trading models based on DQNs have a discrete action space advising which trading action to take for a certain stock. The time has come to learn about continuous action spaces to optimizing portfolio weightings, which is more often a useful and challenging task.
